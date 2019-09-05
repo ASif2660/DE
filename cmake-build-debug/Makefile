@@ -56,17 +56,6 @@ CMAKE_BINARY_DIR = /home/asif/CLionProjects/DE/cmake-build-debug
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/home/asif/Downloads/clion-2018.3.4/bin/cmake/linux/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
-
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
-
-.PHONY : rebuild_cache/fast
-
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
@@ -77,6 +66,17 @@ edit_cache:
 edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
+
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/home/asif/Downloads/clion-2018.3.4/bin/cmake/linux/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+
+.PHONY : rebuild_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -109,6 +109,19 @@ preinstall/fast:
 depend:
 	$(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
+
+#=============================================================================
+# Target rules for targets named myLib
+
+# Build rule for target.
+myLib: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 myLib
+.PHONY : myLib
+
+# fast build rule for target.
+myLib/fast:
+	$(MAKE) -f CMakeFiles/myLib.dir/build.make CMakeFiles/myLib.dir/build
+.PHONY : myLib/fast
 
 #=============================================================================
 # Target rules for targets named DE
@@ -150,18 +163,49 @@ main.cpp.s:
 	$(MAKE) -f CMakeFiles/DE.dir/build.make CMakeFiles/DE.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+src/depth_estimator.o: src/depth_estimator.cpp.o
+
+.PHONY : src/depth_estimator.o
+
+# target to build an object file
+src/depth_estimator.cpp.o:
+	$(MAKE) -f CMakeFiles/myLib.dir/build.make CMakeFiles/myLib.dir/src/depth_estimator.cpp.o
+.PHONY : src/depth_estimator.cpp.o
+
+src/depth_estimator.i: src/depth_estimator.cpp.i
+
+.PHONY : src/depth_estimator.i
+
+# target to preprocess a source file
+src/depth_estimator.cpp.i:
+	$(MAKE) -f CMakeFiles/myLib.dir/build.make CMakeFiles/myLib.dir/src/depth_estimator.cpp.i
+.PHONY : src/depth_estimator.cpp.i
+
+src/depth_estimator.s: src/depth_estimator.cpp.s
+
+.PHONY : src/depth_estimator.s
+
+# target to generate assembly for a file
+src/depth_estimator.cpp.s:
+	$(MAKE) -f CMakeFiles/myLib.dir/build.make CMakeFiles/myLib.dir/src/depth_estimator.cpp.s
+.PHONY : src/depth_estimator.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
+	@echo "... edit_cache"
+	@echo "... myLib"
 	@echo "... rebuild_cache"
 	@echo "... DE"
-	@echo "... edit_cache"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... src/depth_estimator.o"
+	@echo "... src/depth_estimator.i"
+	@echo "... src/depth_estimator.s"
 .PHONY : help
 
 
