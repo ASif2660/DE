@@ -415,6 +415,9 @@ ZED_DIR:PATH=/usr/local/zed
 
 ZED_FOUND:BOOL=TRUE
 
+//The directory containing a CMake configuration file for zed.
+zed_DIR:PATH=/usr/local/zed
+
 
 ########################
 # INTERNAL cache entries

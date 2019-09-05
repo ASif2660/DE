@@ -34,10 +34,10 @@
 				<Option type="3"/>
 				<Option compiler="gcc"/>
 				<Compiler>
+					<Add directory="/usr/local/zed/include"/>
 					<Add directory="/usr/local/cuda/include"/>
 					<Add directory="/home/asif/CLionProjects/DE/eigen/include/eigen3"/>
 					<Add directory="/home/asif/CLionProjects/DE/include"/>
-					<Add directory="/usr/local/zed/include"/>
 					<Add directory="/usr/local/include/opencv4"/>
 					<Add directory="/usr/include/c++/5"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
@@ -62,10 +62,10 @@
 				<Option type="3"/>
 				<Option compiler="gcc"/>
 				<Compiler>
+					<Add directory="/usr/local/zed/include"/>
 					<Add directory="/usr/local/cuda/include"/>
 					<Add directory="/home/asif/CLionProjects/DE/eigen/include/eigen3"/>
 					<Add directory="/home/asif/CLionProjects/DE/include"/>
-					<Add directory="/usr/local/zed/include"/>
 					<Add directory="/usr/local/include/opencv4"/>
 					<Add directory="/usr/include/c++/5"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
@@ -100,10 +100,10 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
+					<Add directory="/usr/local/zed/include"/>
 					<Add directory="/usr/local/cuda/include"/>
 					<Add directory="/home/asif/CLionProjects/DE/eigen/include/eigen3"/>
 					<Add directory="/home/asif/CLionProjects/DE/include"/>
-					<Add directory="/usr/local/zed/include"/>
 					<Add directory="/usr/local/include/opencv4"/>
 					<Add directory="/usr/include/c++/5"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
@@ -128,10 +128,10 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
+					<Add directory="/usr/local/zed/include"/>
 					<Add directory="/usr/local/cuda/include"/>
 					<Add directory="/home/asif/CLionProjects/DE/eigen/include/eigen3"/>
 					<Add directory="/home/asif/CLionProjects/DE/include"/>
-					<Add directory="/usr/local/zed/include"/>
 					<Add directory="/usr/local/include/opencv4"/>
 					<Add directory="/usr/include/c++/5"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>

@@ -15,10 +15,10 @@ set(CMAKE_TARGET_DEFINITIONS_CXX
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
+  "/usr/local/zed/include"
   "/usr/local/cuda-9.0/include"
   "../eigen/include/eigen3"
   "../include"
-  "/usr/local/zed/include"
   "/usr/local/include/opencv4"
   )
 

@@ -10,10 +10,10 @@ set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
+  "/usr/local/zed/include"
   "/usr/local/cuda/include"
   "../eigen/include/eigen3"
   "../include"
-  "/usr/local/zed/include"
   "/usr/local/include/opencv4"
   )
 

@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include "sl/Camera.hpp"
 
 /*
  * Program developed by CANM
@@ -23,9 +23,12 @@
 
  */
 
+using namespace sl;
+
 int main() {
 
 
+    Camera zed;
     std::cout << "Hello, World!" << std::endl;
     return 0;
 

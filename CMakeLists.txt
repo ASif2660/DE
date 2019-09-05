@@ -4,8 +4,9 @@ project(DE)
 
 
 #SET IMPORTANT PARAMETERS
-
+set(ZED_DIR "/usr/local/zed")
 set(CMAKE_CXX_STANDARD 11)
+
 
 
 
@@ -13,7 +14,7 @@ set(CMAKE_CXX_STANDARD 11)
 #FIND ALL THE PACKAGES REQUIRED
 
 find_package(OpenCV REQUIRED )
-find_package(ZED 2 REQUIRED)
+find_package(zed  REQUIRED)
 find_package(CUDA ${ZED_CUDA_VERSION} EXACT REQUIRED) # based on this tutorial https://github.com/stereolabs/zed-examples/blob/master/tutorials/tutorial%203%20-%20depth%20sensing/CMakeLists.txt
 
 
@@ -21,13 +22,13 @@ find_package(CUDA ${ZED_CUDA_VERSION} EXACT REQUIRED) # based on this tutorial h
 
 
 #INCLUDE IMPORTANT DIRECTORIES
-
+include_directories(${ZED_INCLUDE_DIRS})
 include_directories(${CUDA_INCLUDE_DIRS}) # for ZED
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/eigen/include/eigen3 ) #setting up eigen include (Eigen is template based lib)
 # .. my includes (or wrappers over the top)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ) # my custom interfaces
 # .. Adding ZED only libraries, (they depend on cuda, include them prior)
-include_directories(${ZED_INCLUDE_DIRS})
+
 
 
 

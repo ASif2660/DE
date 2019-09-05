@@ -6,5 +6,5 @@ CXX_FLAGS =   -std=gnu++11
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/usr/local/cuda-9.0/include -I/home/asif/CLionProjects/DE/eigen/include/eigen3 -I/home/asif/CLionProjects/DE/include -I/usr/local/zed/include -isystem /usr/local/include/opencv4 
+CXX_INCLUDES = -I/usr/local/zed/include -I/usr/local/cuda-9.0/include -I/home/asif/CLionProjects/DE/eigen/include/eigen3 -I/home/asif/CLionProjects/DE/include -isystem /usr/local/include/opencv4 
 
