@@ -4,9 +4,9 @@ project(DE)
 
 
 #SET IMPORTANT PARAMETERS
-set(ZED_DIR "/usr/local/zed")
+#set(ZED_DIR "/usr/local/zed")
 set(CMAKE_CXX_STANDARD 11)
-
+set( ZED_DIR "/usr/local/zed/")
 
 
 
@@ -14,7 +14,7 @@ set(CMAKE_CXX_STANDARD 11)
 #FIND ALL THE PACKAGES REQUIRED
 
 find_package(OpenCV REQUIRED )
-find_package(zed  REQUIRED)
+find_package(zed REQUIRED)
 find_package(CUDA ${ZED_CUDA_VERSION} EXACT REQUIRED) # based on this tutorial https://github.com/stereolabs/zed-examples/blob/master/tutorials/tutorial%203%20-%20depth%20sensing/CMakeLists.txt
 
 
@@ -34,11 +34,9 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ) # my custom interfaces
 
 
 #CREATE A LIBRARY
-
+link_directories(${ZED_LIBARY_DIR})
 add_library(myLib SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/depth_estimator.cpp ) # appends file from src and creates a shared object
 target_link_libraries(myLib ${OpenCV_LIBS})
-target_link_libraries(myLib ${ZED_LIBRARY_DIR})
-target_link_libraries(myLib ${CUDA_LIBARY_DIR})
 
 
 
@@ -46,12 +44,14 @@ target_link_libraries(myLib ${CUDA_LIBARY_DIR})
 
 #CREATEA EXECUTABLE
 
-add_executable(DE main.cpp)
+add_executable(DE src/main.cpp)
 
 
 #LINK EXECUTABLE WITH CUSTOM BINARIES/LIBS
 
 target_link_libraries(DE myLib)
+target_link_libraries(DE ${ZED_LIBRARY_DIR})
+target_link_libraries(DE ${CUDA_LIBARY_DIR})
 
 
 

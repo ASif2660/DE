@@ -57,27 +57,27 @@ include CMakeFiles/DE.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/DE.dir/flags.make
 
-CMakeFiles/DE.dir/main.cpp.o: CMakeFiles/DE.dir/flags.make
-CMakeFiles/DE.dir/main.cpp.o: ../main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/asif/CLionProjects/DE/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/DE.dir/main.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/DE.dir/main.cpp.o -c /home/asif/CLionProjects/DE/main.cpp
+CMakeFiles/DE.dir/src/main.cpp.o: CMakeFiles/DE.dir/flags.make
+CMakeFiles/DE.dir/src/main.cpp.o: ../src/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/asif/CLionProjects/DE/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/DE.dir/src/main.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/DE.dir/src/main.cpp.o -c /home/asif/CLionProjects/DE/src/main.cpp
 
-CMakeFiles/DE.dir/main.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/DE.dir/main.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/asif/CLionProjects/DE/main.cpp > CMakeFiles/DE.dir/main.cpp.i
+CMakeFiles/DE.dir/src/main.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/DE.dir/src/main.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/asif/CLionProjects/DE/src/main.cpp > CMakeFiles/DE.dir/src/main.cpp.i
 
-CMakeFiles/DE.dir/main.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/DE.dir/main.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/asif/CLionProjects/DE/main.cpp -o CMakeFiles/DE.dir/main.cpp.s
+CMakeFiles/DE.dir/src/main.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/DE.dir/src/main.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/asif/CLionProjects/DE/src/main.cpp -o CMakeFiles/DE.dir/src/main.cpp.s
 
 # Object files for target DE
 DE_OBJECTS = \
-"CMakeFiles/DE.dir/main.cpp.o"
+"CMakeFiles/DE.dir/src/main.cpp.o"
 
 # External object files for target DE
 DE_EXTERNAL_OBJECTS =
 
-DE: CMakeFiles/DE.dir/main.cpp.o
+DE: CMakeFiles/DE.dir/src/main.cpp.o
 DE: CMakeFiles/DE.dir/build.make
 DE: libmyLib.so
 DE: /usr/local/lib/libopencv_gapi.so.4.1.1

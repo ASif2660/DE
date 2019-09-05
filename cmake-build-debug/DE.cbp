@@ -150,11 +150,11 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/asif/CLionProjects/DE/main.cpp">
-			<Option target="DE"/>
-		</Unit>
 		<Unit filename="/home/asif/CLionProjects/DE/src/depth_estimator.cpp">
 			<Option target="myLib"/>
+		</Unit>
+		<Unit filename="/home/asif/CLionProjects/DE/src/main.cpp">
+			<Option target="DE"/>
 		</Unit>
 		<Unit filename="/home/asif/CLionProjects/DE/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
