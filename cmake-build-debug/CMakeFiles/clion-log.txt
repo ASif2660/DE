@@ -1,5 +1,4 @@
 /home/asif/Downloads/clion-2018.3.4/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/asif/CLionProjects/DE
 -- Configuring done
-WARNING: Target "DE" requests linking to directory "/usr/local/zed/lib".  Targets may link only to libraries.  CMake is dropping the item.
 -- Generating done
 -- Build files have been written to: /home/asif/CLionProjects/DE/cmake-build-debug

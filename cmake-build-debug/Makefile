@@ -111,6 +111,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named DE
+
+# Build rule for target.
+DE: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 DE
+.PHONY : DE
+
+# fast build rule for target.
+DE/fast:
+	$(MAKE) -f CMakeFiles/DE.dir/build.make CMakeFiles/DE.dir/build
+.PHONY : DE/fast
+
+#=============================================================================
 # Target rules for targets named myLib
 
 # Build rule for target.
@@ -124,17 +137,44 @@ myLib/fast:
 .PHONY : myLib/fast
 
 #=============================================================================
-# Target rules for targets named DE
+# Target rules for targets named gl
 
 # Build rule for target.
-DE: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 DE
-.PHONY : DE
+gl: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 gl
+.PHONY : gl
 
 # fast build rule for target.
-DE/fast:
-	$(MAKE) -f CMakeFiles/DE.dir/build.make CMakeFiles/DE.dir/build
-.PHONY : DE/fast
+gl/fast:
+	$(MAKE) -f CMakeFiles/gl.dir/build.make CMakeFiles/gl.dir/build
+.PHONY : gl/fast
+
+src/GLViewer.o: src/GLViewer.cpp.o
+
+.PHONY : src/GLViewer.o
+
+# target to build an object file
+src/GLViewer.cpp.o:
+	$(MAKE) -f CMakeFiles/gl.dir/build.make CMakeFiles/gl.dir/src/GLViewer.cpp.o
+.PHONY : src/GLViewer.cpp.o
+
+src/GLViewer.i: src/GLViewer.cpp.i
+
+.PHONY : src/GLViewer.i
+
+# target to preprocess a source file
+src/GLViewer.cpp.i:
+	$(MAKE) -f CMakeFiles/gl.dir/build.make CMakeFiles/gl.dir/src/GLViewer.cpp.i
+.PHONY : src/GLViewer.cpp.i
+
+src/GLViewer.s: src/GLViewer.cpp.s
+
+.PHONY : src/GLViewer.s
+
+# target to generate assembly for a file
+src/GLViewer.cpp.s:
+	$(MAKE) -f CMakeFiles/gl.dir/build.make CMakeFiles/gl.dir/src/GLViewer.cpp.s
+.PHONY : src/GLViewer.cpp.s
 
 src/depth_estimator.o: src/depth_estimator.cpp.o
 
@@ -190,6 +230,33 @@ src/main.cpp.s:
 	$(MAKE) -f CMakeFiles/DE.dir/build.make CMakeFiles/DE.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+test/test.o: test/test.cpp.o
+
+.PHONY : test/test.o
+
+# target to build an object file
+test/test.cpp.o:
+	$(MAKE) -f CMakeFiles/DE.dir/build.make CMakeFiles/DE.dir/test/test.cpp.o
+.PHONY : test/test.cpp.o
+
+test/test.i: test/test.cpp.i
+
+.PHONY : test/test.i
+
+# target to preprocess a source file
+test/test.cpp.i:
+	$(MAKE) -f CMakeFiles/DE.dir/build.make CMakeFiles/DE.dir/test/test.cpp.i
+.PHONY : test/test.cpp.i
+
+test/test.s: test/test.cpp.s
+
+.PHONY : test/test.s
+
+# target to generate assembly for a file
+test/test.cpp.s:
+	$(MAKE) -f CMakeFiles/DE.dir/build.make CMakeFiles/DE.dir/test/test.cpp.s
+.PHONY : test/test.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -197,15 +264,22 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
-	@echo "... myLib"
 	@echo "... rebuild_cache"
 	@echo "... DE"
+	@echo "... myLib"
+	@echo "... gl"
+	@echo "... src/GLViewer.o"
+	@echo "... src/GLViewer.i"
+	@echo "... src/GLViewer.s"
 	@echo "... src/depth_estimator.o"
 	@echo "... src/depth_estimator.i"
 	@echo "... src/depth_estimator.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... test/test.o"
+	@echo "... test/test.i"
+	@echo "... test/test.s"
 .PHONY : help
 
 

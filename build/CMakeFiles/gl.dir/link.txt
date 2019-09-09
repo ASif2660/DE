@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC   -shared -Wl,-soname,libgl.so -o libgl.so CMakeFiles/gl.dir/src/GLViewer.cpp.o  -L/usr/local/cuda-9.0/lib64 

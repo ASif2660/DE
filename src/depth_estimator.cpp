@@ -1,6 +1,9 @@
 //
 // Created by asif on 05.09.19.
 //
-#include "sl/Camera.hpp"
+#include "opencv2/opencv.hpp"
+
+
+// Here we create the functionality for aruco marker
 
 

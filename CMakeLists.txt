@@ -16,7 +16,9 @@ set( ZED_DIR "/usr/local/zed/")
 find_package(OpenCV REQUIRED )
 find_package(zed REQUIRED)
 find_package(CUDA ${ZED_CUDA_VERSION} EXACT REQUIRED) # based on this tutorial https://github.com/stereolabs/zed-examples/blob/master/tutorials/tutorial%203%20-%20depth%20sensing/CMakeLists.txt
-
+find_package(GLUT REQUIRED)
+find_package(GLEW REQUIRED)
+find_package(OpenGL REQUIRED)
 
 
 
@@ -28,6 +30,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/eigen/include/eigen3 ) #setting 
 # .. my includes (or wrappers over the top)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ) # my custom interfaces
 # .. Adding ZED only libraries, (they depend on cuda, include them prior)
+include_directories(${GLEW_INCLUDE_DIRS})
+include_directories(${GLUT_INCLUDE_DIRS})
 
 
 
@@ -36,22 +40,28 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ) # my custom interfaces
 #CREATE A LIBRARY
 link_directories(${ZED_LIBARY_DIR})
 add_library(myLib SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/depth_estimator.cpp ) # appends file from src and creates a shared object
+add_library(gl SHARED ${ZED_LIBRARIES} ${CUDA_CUDA_LIBRARY} ${CUDA_CUDART_LIBRARY} ${CUDA_NPP_LIBRARIES_ZED} src/GLViewer.cpp )
 target_link_libraries(myLib ${OpenCV_LIBS})
 
 
 
 
 
-#CREATEA EXECUTABLE
+#CREATE EXECUTABLE
 
-add_executable(DE src/main.cpp)
+add_executable(DE src/main.cpp test/test.cpp)
+
+#CREATE A TEST EXAMPLE FOR DEPTH DETECTION
+
+
 
 
 #LINK EXECUTABLE WITH CUSTOM BINARIES/LIBS
 
-target_link_libraries(DE myLib)
-target_link_libraries(DE ${ZED_LIBRARY_DIR})
-target_link_libraries(DE ${CUDA_LIBARY_DIR})
+target_link_libraries(DE myLib gl)
+SET(ZED_LIBS ${ZED_LIBRARIES} ${CUDA_CUDA_LIBRARY} ${CUDA_CUDART_LIBRARY} ${CUDA_NPP_LIBRARIES_ZED} pthread X11)
+target_link_libraries(DE ${ZED_LIBS} ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${GLEW_LIBRARY} )
+
 
 
 

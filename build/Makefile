@@ -56,17 +56,6 @@ CMAKE_BINARY_DIR = /home/asif/CLionProjects/DE/build
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target edit_cache
-edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
-	/usr/local/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
-.PHONY : edit_cache
-
-# Special rule for the target edit_cache
-edit_cache/fast: edit_cache
-
-.PHONY : edit_cache/fast
-
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
@@ -77,6 +66,17 @@ rebuild_cache:
 rebuild_cache/fast: rebuild_cache
 
 .PHONY : rebuild_cache/fast
+
+# Special rule for the target edit_cache
+edit_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
+	/usr/local/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+.PHONY : edit_cache
+
+# Special rule for the target edit_cache
+edit_cache/fast: edit_cache
+
+.PHONY : edit_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -111,6 +111,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named myLib
+
+# Build rule for target.
+myLib: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 myLib
+.PHONY : myLib
+
+# fast build rule for target.
+myLib/fast:
+	$(MAKE) -f CMakeFiles/myLib.dir/build.make CMakeFiles/myLib.dir/build
+.PHONY : myLib/fast
+
+#=============================================================================
 # Target rules for targets named DE
 
 # Build rule for target.
@@ -124,44 +137,44 @@ DE/fast:
 .PHONY : DE/fast
 
 #=============================================================================
-# Target rules for targets named myLib
+# Target rules for targets named gl
 
 # Build rule for target.
-myLib: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 myLib
-.PHONY : myLib
+gl: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 gl
+.PHONY : gl
 
 # fast build rule for target.
-myLib/fast:
-	$(MAKE) -f CMakeFiles/myLib.dir/build.make CMakeFiles/myLib.dir/build
-.PHONY : myLib/fast
+gl/fast:
+	$(MAKE) -f CMakeFiles/gl.dir/build.make CMakeFiles/gl.dir/build
+.PHONY : gl/fast
 
-main.o: main.cpp.o
+src/GLViewer.o: src/GLViewer.cpp.o
 
-.PHONY : main.o
+.PHONY : src/GLViewer.o
 
 # target to build an object file
-main.cpp.o:
-	$(MAKE) -f CMakeFiles/DE.dir/build.make CMakeFiles/DE.dir/main.cpp.o
-.PHONY : main.cpp.o
+src/GLViewer.cpp.o:
+	$(MAKE) -f CMakeFiles/gl.dir/build.make CMakeFiles/gl.dir/src/GLViewer.cpp.o
+.PHONY : src/GLViewer.cpp.o
 
-main.i: main.cpp.i
+src/GLViewer.i: src/GLViewer.cpp.i
 
-.PHONY : main.i
+.PHONY : src/GLViewer.i
 
 # target to preprocess a source file
-main.cpp.i:
-	$(MAKE) -f CMakeFiles/DE.dir/build.make CMakeFiles/DE.dir/main.cpp.i
-.PHONY : main.cpp.i
+src/GLViewer.cpp.i:
+	$(MAKE) -f CMakeFiles/gl.dir/build.make CMakeFiles/gl.dir/src/GLViewer.cpp.i
+.PHONY : src/GLViewer.cpp.i
 
-main.s: main.cpp.s
+src/GLViewer.s: src/GLViewer.cpp.s
 
-.PHONY : main.s
+.PHONY : src/GLViewer.s
 
 # target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) -f CMakeFiles/DE.dir/build.make CMakeFiles/DE.dir/main.cpp.s
-.PHONY : main.cpp.s
+src/GLViewer.cpp.s:
+	$(MAKE) -f CMakeFiles/gl.dir/build.make CMakeFiles/gl.dir/src/GLViewer.cpp.s
+.PHONY : src/GLViewer.cpp.s
 
 src/depth_estimator.o: src/depth_estimator.cpp.o
 
@@ -190,22 +203,53 @@ src/depth_estimator.cpp.s:
 	$(MAKE) -f CMakeFiles/myLib.dir/build.make CMakeFiles/myLib.dir/src/depth_estimator.cpp.s
 .PHONY : src/depth_estimator.cpp.s
 
+src/main.o: src/main.cpp.o
+
+.PHONY : src/main.o
+
+# target to build an object file
+src/main.cpp.o:
+	$(MAKE) -f CMakeFiles/DE.dir/build.make CMakeFiles/DE.dir/src/main.cpp.o
+.PHONY : src/main.cpp.o
+
+src/main.i: src/main.cpp.i
+
+.PHONY : src/main.i
+
+# target to preprocess a source file
+src/main.cpp.i:
+	$(MAKE) -f CMakeFiles/DE.dir/build.make CMakeFiles/DE.dir/src/main.cpp.i
+.PHONY : src/main.cpp.i
+
+src/main.s: src/main.cpp.s
+
+.PHONY : src/main.s
+
+# target to generate assembly for a file
+src/main.cpp.s:
+	$(MAKE) -f CMakeFiles/DE.dir/build.make CMakeFiles/DE.dir/src/main.cpp.s
+.PHONY : src/main.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... edit_cache"
-	@echo "... DE"
-	@echo "... rebuild_cache"
 	@echo "... myLib"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
+	@echo "... rebuild_cache"
+	@echo "... DE"
+	@echo "... gl"
+	@echo "... edit_cache"
+	@echo "... src/GLViewer.o"
+	@echo "... src/GLViewer.i"
+	@echo "... src/GLViewer.s"
 	@echo "... src/depth_estimator.o"
 	@echo "... src/depth_estimator.i"
 	@echo "... src/depth_estimator.s"
+	@echo "... src/main.o"
+	@echo "... src/main.i"
+	@echo "... src/main.s"
 .PHONY : help
 
 

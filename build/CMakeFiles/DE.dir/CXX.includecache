@@ -6,11 +6,33 @@
 
 #IncludeRegexTransform: 
 
-/home/asif/CLionProjects/DE/main.cpp
+/home/asif/CLionProjects/DE/include/GLViewer.hpp
+vector
+-
+mutex
+-
+sl/Camera.hpp
+-
+GL/glew.h
+-
+GL/freeglut.h
+-
+GL/gl.h
+-
+GL/glut.h
+-
+cuda.h
+-
+cuda_gl_interop.h
+-
+
+/home/asif/CLionProjects/DE/src/main.cpp
 iostream
 -
 sl/Camera.hpp
-/home/asif/CLionProjects/DE/sl/Camera.hpp
+/home/asif/CLionProjects/DE/src/sl/Camera.hpp
+../include/GLViewer.hpp
+/home/asif/CLionProjects/DE/include/GLViewer.hpp
 
 /usr/local/cuda-9.0/include/builtin_types.h
 device_types.h
@@ -203,6 +225,16 @@ driver_types.h
 /usr/local/cuda-9.0/include/driver_types.h
 host_defines.h
 /usr/local/cuda-9.0/include/host_defines.h
+
+/usr/local/cuda-9.0/include/cuda_gl_interop.h
+builtin_types.h
+/usr/local/cuda-9.0/include/builtin_types.h
+host_defines.h
+/usr/local/cuda-9.0/include/host_defines.h
+OpenGL/gl.h
+-
+GL/gl.h
+-
 
 /usr/local/cuda-9.0/include/cuda_runtime.h
 host_config.h
