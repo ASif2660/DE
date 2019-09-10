@@ -49,7 +49,10 @@ target_link_libraries(myLib ${OpenCV_LIBS})
 
 #CREATE EXECUTABLE
 
-add_executable(DE src/main.cpp test/test.cpp)
+add_executable(DE test/test.cpp)
+add_executable(main src/main.cpp)
+
+
 
 #CREATE A TEST EXAMPLE FOR DEPTH DETECTION
 
@@ -59,10 +62,14 @@ add_executable(DE src/main.cpp test/test.cpp)
 #LINK EXECUTABLE WITH CUSTOM BINARIES/LIBS
 
 target_link_libraries(DE myLib gl)
+target_link_libraries(main myLib)
+
+# ...only test program uses it
 SET(ZED_LIBS ${ZED_LIBRARIES} ${CUDA_CUDA_LIBRARY} ${CUDA_CUDART_LIBRARY} ${CUDA_NPP_LIBRARIES_ZED} pthread X11)
+
+
 target_link_libraries(DE ${ZED_LIBS} ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${GLEW_LIBRARY} )
-
-
+target_link_libraries(main ${ZED_LIBS} ${OpenCV_LIBRARIES} )
 
 
 # INSTALL EXEC PROPERTIES

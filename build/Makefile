@@ -56,17 +56,6 @@ CMAKE_BINARY_DIR = /home/asif/CLionProjects/DE/build
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/local/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
-
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
-
-.PHONY : rebuild_cache/fast
-
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
@@ -77,6 +66,17 @@ edit_cache:
 edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
+
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/usr/local/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+
+.PHONY : rebuild_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -124,6 +124,19 @@ myLib/fast:
 .PHONY : myLib/fast
 
 #=============================================================================
+# Target rules for targets named gl
+
+# Build rule for target.
+gl: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 gl
+.PHONY : gl
+
+# fast build rule for target.
+gl/fast:
+	$(MAKE) -f CMakeFiles/gl.dir/build.make CMakeFiles/gl.dir/build
+.PHONY : gl/fast
+
+#=============================================================================
 # Target rules for targets named DE
 
 # Build rule for target.
@@ -137,17 +150,17 @@ DE/fast:
 .PHONY : DE/fast
 
 #=============================================================================
-# Target rules for targets named gl
+# Target rules for targets named main
 
 # Build rule for target.
-gl: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 gl
-.PHONY : gl
+main: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 main
+.PHONY : main
 
 # fast build rule for target.
-gl/fast:
-	$(MAKE) -f CMakeFiles/gl.dir/build.make CMakeFiles/gl.dir/build
-.PHONY : gl/fast
+main/fast:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
+.PHONY : main/fast
 
 src/GLViewer.o: src/GLViewer.cpp.o
 
@@ -209,7 +222,7 @@ src/main.o: src/main.cpp.o
 
 # target to build an object file
 src/main.cpp.o:
-	$(MAKE) -f CMakeFiles/DE.dir/build.make CMakeFiles/DE.dir/src/main.cpp.o
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main.cpp.o
 .PHONY : src/main.cpp.o
 
 src/main.i: src/main.cpp.i
@@ -218,7 +231,7 @@ src/main.i: src/main.cpp.i
 
 # target to preprocess a source file
 src/main.cpp.i:
-	$(MAKE) -f CMakeFiles/DE.dir/build.make CMakeFiles/DE.dir/src/main.cpp.i
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main.cpp.i
 .PHONY : src/main.cpp.i
 
 src/main.s: src/main.cpp.s
@@ -227,8 +240,35 @@ src/main.s: src/main.cpp.s
 
 # target to generate assembly for a file
 src/main.cpp.s:
-	$(MAKE) -f CMakeFiles/DE.dir/build.make CMakeFiles/DE.dir/src/main.cpp.s
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
+
+test/test.o: test/test.cpp.o
+
+.PHONY : test/test.o
+
+# target to build an object file
+test/test.cpp.o:
+	$(MAKE) -f CMakeFiles/DE.dir/build.make CMakeFiles/DE.dir/test/test.cpp.o
+.PHONY : test/test.cpp.o
+
+test/test.i: test/test.cpp.i
+
+.PHONY : test/test.i
+
+# target to preprocess a source file
+test/test.cpp.i:
+	$(MAKE) -f CMakeFiles/DE.dir/build.make CMakeFiles/DE.dir/test/test.cpp.i
+.PHONY : test/test.cpp.i
+
+test/test.s: test/test.cpp.s
+
+.PHONY : test/test.s
+
+# target to generate assembly for a file
+test/test.cpp.s:
+	$(MAKE) -f CMakeFiles/DE.dir/build.make CMakeFiles/DE.dir/test/test.cpp.s
+.PHONY : test/test.cpp.s
 
 # Help Target
 help:
@@ -237,10 +277,11 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... myLib"
+	@echo "... edit_cache"
+	@echo "... gl"
 	@echo "... rebuild_cache"
 	@echo "... DE"
-	@echo "... gl"
-	@echo "... edit_cache"
+	@echo "... main"
 	@echo "... src/GLViewer.o"
 	@echo "... src/GLViewer.i"
 	@echo "... src/GLViewer.s"
@@ -250,6 +291,9 @@ help:
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... test/test.o"
+	@echo "... test/test.i"
+	@echo "... test/test.s"
 .PHONY : help
 
 

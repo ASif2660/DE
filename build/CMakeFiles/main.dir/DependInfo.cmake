@@ -4,14 +4,14 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/asif/CLionProjects/DE/test/test.cpp" "/home/asif/CLionProjects/DE/cmake-build-debug/CMakeFiles/DE.dir/test/test.cpp.o"
+  "/home/asif/CLionProjects/DE/src/main.cpp" "/home/asif/CLionProjects/DE/build/CMakeFiles/main.dir/src/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "/usr/local/zed/include"
-  "/usr/local/cuda/include"
+  "/usr/local/cuda-9.0/include"
   "../eigen/include/eigen3"
   "../include"
   "/usr/local/include/opencv4"
@@ -19,8 +19,7 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/asif/CLionProjects/DE/cmake-build-debug/CMakeFiles/myLib.dir/DependInfo.cmake"
-  "/home/asif/CLionProjects/DE/cmake-build-debug/CMakeFiles/gl.dir/DependInfo.cmake"
+  "/home/asif/CLionProjects/DE/build/CMakeFiles/myLib.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

@@ -26,11 +26,11 @@ cuda.h
 cuda_gl_interop.h
 -
 
-/home/asif/CLionProjects/DE/src/main.cpp
+/home/asif/CLionProjects/DE/test/test.cpp
 ../include/GLViewer.hpp
 /home/asif/CLionProjects/DE/include/GLViewer.hpp
 sl/Camera.hpp
-/home/asif/CLionProjects/DE/src/sl/Camera.hpp
+/home/asif/CLionProjects/DE/test/sl/Camera.hpp
 
 /usr/local/cuda/include/builtin_types.h
 device_types.h
