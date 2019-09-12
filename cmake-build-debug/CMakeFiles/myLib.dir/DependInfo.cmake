@@ -14,7 +14,8 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "/usr/local/cuda/include"
   "../eigen/include/eigen3"
   "../include"
-  "/usr/local/include/opencv4"
+  "/usr/local/include"
+  "/usr/local/include/opencv"
   )
 
 # Targets to which this target links.

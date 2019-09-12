@@ -13,7 +13,7 @@ set( ZED_DIR "/usr/local/zed/")
 
 #FIND ALL THE PACKAGES REQUIRED
 
-find_package(OpenCV REQUIRED )
+find_package(OpenCV 3.4.7 REQUIRED )
 find_package(zed REQUIRED)
 find_package(CUDA ${ZED_CUDA_VERSION} EXACT REQUIRED) # based on this tutorial https://github.com/stereolabs/zed-examples/blob/master/tutorials/tutorial%203%20-%20depth%20sensing/CMakeLists.txt
 find_package(GLUT REQUIRED)
