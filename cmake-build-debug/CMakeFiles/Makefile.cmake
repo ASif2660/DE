@@ -47,7 +47,6 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/home/asif/Downloads/clion-2018.3.4/bin/cmake/linux/share/cmake-3.13/Modules/Platform/UnixPaths.cmake"
   "/home/asif/Downloads/clion-2018.3.4/bin/cmake/linux/share/cmake-3.13/Modules/ProcessorCount.cmake"
   "/home/asif/Downloads/clion-2018.3.4/bin/cmake/linux/share/cmake-3.13/Modules/SelectLibraryConfigurations.cmake"
-  "/usr/local/lib/cmake/opencv4/OpenCVConfig-version.cmake"
   "/usr/local/share/OpenCV/OpenCVConfig-version.cmake"
   "/usr/local/share/OpenCV/OpenCVConfig.cmake"
   "/usr/local/share/OpenCV/OpenCVModules-release.cmake"

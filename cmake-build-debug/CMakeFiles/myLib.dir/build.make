@@ -89,6 +89,7 @@ libmyLib.so: /usr/local/lib/libopencv_ccalib.so.3.4.7
 libmyLib.so: /usr/local/lib/libopencv_dnn_objdetect.so.3.4.7
 libmyLib.so: /usr/local/lib/libopencv_dpm.so.3.4.7
 libmyLib.so: /usr/local/lib/libopencv_face.so.3.4.7
+libmyLib.so: /usr/local/lib/libopencv_freetype.so.3.4.7
 libmyLib.so: /usr/local/lib/libopencv_fuzzy.so.3.4.7
 libmyLib.so: /usr/local/lib/libopencv_hfs.so.3.4.7
 libmyLib.so: /usr/local/lib/libopencv_img_hash.so.3.4.7
