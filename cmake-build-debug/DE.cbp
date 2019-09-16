@@ -260,6 +260,9 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/home/asif/CLionProjects/DE/include/aruco.hpp">
+			<Option target="main"/>
+		</Unit>
 		<Unit filename="/home/asif/CLionProjects/DE/include/zed2cv.h">
 			<Option target="main"/>
 		</Unit>

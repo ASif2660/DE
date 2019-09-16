@@ -50,7 +50,7 @@ target_link_libraries(myLib ${OpenCV_LIBS})
 #CREATE EXECUTABLE
 
 add_executable(DE test/test.cpp )
-add_executable(main src/main.cpp include/zed2cv.h)
+add_executable(main src/main.cpp include/zed2cv.h )
 
 
 
