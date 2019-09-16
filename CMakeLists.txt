@@ -40,7 +40,7 @@ include_directories(${GLUT_INCLUDE_DIRS})
 #CREATE A LIBRARY
 link_directories(${ZED_LIBARY_DIR})
 add_library(myLib SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/depth_estimator.cpp ) # appends file from src and creates a shared object
-add_library(gl SHARED ${ZED_LIBRARIES} ${CUDA_CUDA_LIBRARY} ${CUDA_CUDART_LIBRARY} ${CUDA_NPP_LIBRARIES_ZED} src/GLViewer.cpp )
+add_library(gl SHARED ${ZED_LIBRARIES} ${CUDA_CUDA_LIBRARY} ${CUDA_CUDART_LIBRARY} ${CUDA_NPP_LIBRARIES_ZED} src/GLViewer.cpp src/birdsEye.cpp)
 target_link_libraries(myLib ${OpenCV_LIBS})
 
 
@@ -50,7 +50,7 @@ target_link_libraries(myLib ${OpenCV_LIBS})
 #CREATE EXECUTABLE
 
 add_executable(DE test/test.cpp )
-add_executable(main src/main.cpp include/zed2cv.h )
+add_executable(main src/main.cpp include/zed2cv.h src/birdsEye.cpp)
 
 
 

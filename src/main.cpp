@@ -1,30 +1,4 @@
-///////////////////////////////////////////////////////////////////////////
-//
-// Copyright (c) 2019, STEREOLABS.
-//
-// All rights reserved.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-///////////////////////////////////////////////////////////////////////////
 
-/***********************************************************************************************
- ** This sample demonstrates how to reloc a ZED camera using an ArUco marker.                  **
- ** Images are captured with the ZED SDK and cameras poses is then computed from ArUco pattern **
- ** to reset ZED tracking with this known position.                                            **
- ***********************************************************************************************/
-
-// ZED includes
 #include <sl/Camera.hpp>
 
 // Sample includes
@@ -34,7 +8,7 @@
 
 // OCV includes
 #include <opencv2/opencv.hpp>
-
+#include <birdsEye.h>
 using namespace sl;
 using namespace std;
 
@@ -165,7 +139,6 @@ int main(int argc, char **argv) {
             cv::aruco::detectMarkers(image_ocv_rgb, dictionary, corners, ids);
 
 
-
             // get actual ZED position
 
             zed.getPosition(zed_pose);
@@ -185,7 +158,6 @@ int main(int argc, char **argv) {
             position_txt = "ZED  x: " + to_string(zed_pose.pose_data.tx) + "; y: " + to_string(zed_pose.pose_data.ty) + "; z: " + to_string(zed_pose.pose_data.tz);
 
             cv::putText(image_ocv_rgb, position_txt, cv::Point(10, 35), cv::FONT_HERSHEY_SIMPLEX, 0.6, cv::Scalar(236, 188, 26));
-
 
 
             // if at least one marker detected
@@ -213,19 +185,30 @@ int main(int argc, char **argv) {
                 int x = (corners[0][0].x + corners[0][1].x + corners[0][2].x + corners[0][3].x) / 4;
                 int y = (corners[0][0].y + corners[0][1].y + corners[0][2].y + corners[0][3].y) / 4;
 
+
+
+        //        surroundEye.scalingFactor(corners, zed.getResolution());
+
+
+
+
+
                 point_cloud.getValue(x, y, &point_cloud_value);
+
 
 
 
                 float distance = sqrt(point_cloud_value.x * point_cloud_value.x + point_cloud_value.y * point_cloud_value.y + point_cloud_value.z * point_cloud_value.z);
 
 
-
                 position_txt = "X: " + to_string(x) + " Y: " + to_string(y) +  " Distance is: " + to_string(distance);
 
 
-
                 cv::putText(image_ocv_rgb, position_txt, cv::Point(10, 60), cv::FONT_HERSHEY_SIMPLEX, 0.6, cv::Scalar(124, 252, 124));
+
+
+
+
 
 
 
@@ -240,12 +223,17 @@ int main(int argc, char **argv) {
             cv::imshow("Image", image_ocv_rgb);
 
 
+            birdsEye surroundEye(image_ocv_rgb, camera_matrix, calibInfo);
 
-            // Handle key event
+            surroundEye.trackbarFunction();
+
 
             key = cv::waitKey(10);
 
 
+
+
+            // Handle key event
 
             // if KEY_R is pressed and aruco marker is visible, then reset ZED position
 

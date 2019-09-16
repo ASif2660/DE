@@ -260,7 +260,7 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/asif/CLionProjects/DE/include/aruco.hpp">
+		<Unit filename="/home/asif/CLionProjects/DE/include/birdsEye.h">
 			<Option target="main"/>
 		</Unit>
 		<Unit filename="/home/asif/CLionProjects/DE/include/zed2cv.h">
@@ -269,11 +269,17 @@
 		<Unit filename="/home/asif/CLionProjects/DE/src/GLViewer.cpp">
 			<Option target="gl"/>
 		</Unit>
+		<Unit filename="/home/asif/CLionProjects/DE/src/birdsEye.cpp">
+			<Option target="gl"/>
+		</Unit>
 		<Unit filename="/home/asif/CLionProjects/DE/src/depth_estimator.cpp">
 			<Option target="myLib"/>
 		</Unit>
 		<Unit filename="/home/asif/CLionProjects/DE/src/main.cpp">
 			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/asif/CLionProjects/DE/src/pixelcalculato.cpp">
+			<Option target="gl"/>
 		</Unit>
 		<Unit filename="/home/asif/CLionProjects/DE/test/test.cpp">
 			<Option target="DE"/>

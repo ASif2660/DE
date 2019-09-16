@@ -5,6 +5,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
   "/home/asif/CLionProjects/DE/src/GLViewer.cpp" "/home/asif/CLionProjects/DE/cmake-build-debug/CMakeFiles/gl.dir/src/GLViewer.cpp.o"
+  "/home/asif/CLionProjects/DE/src/birdsEye.cpp" "/home/asif/CLionProjects/DE/cmake-build-debug/CMakeFiles/gl.dir/src/birdsEye.cpp.o"
+  "/home/asif/CLionProjects/DE/src/pixelcalculato.cpp" "/home/asif/CLionProjects/DE/cmake-build-debug/CMakeFiles/gl.dir/src/pixelcalculato.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
