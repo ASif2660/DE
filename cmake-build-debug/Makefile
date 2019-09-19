@@ -195,6 +195,8 @@ src/birdsEye.o: src/birdsEye.cpp.o
 
 # target to build an object file
 src/birdsEye.cpp.o:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/birdsEye.cpp.o
+	$(MAKE) -f CMakeFiles/DE.dir/build.make CMakeFiles/DE.dir/src/birdsEye.cpp.o
 	$(MAKE) -f CMakeFiles/gl.dir/build.make CMakeFiles/gl.dir/src/birdsEye.cpp.o
 .PHONY : src/birdsEye.cpp.o
 
@@ -204,6 +206,8 @@ src/birdsEye.i: src/birdsEye.cpp.i
 
 # target to preprocess a source file
 src/birdsEye.cpp.i:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/birdsEye.cpp.i
+	$(MAKE) -f CMakeFiles/DE.dir/build.make CMakeFiles/DE.dir/src/birdsEye.cpp.i
 	$(MAKE) -f CMakeFiles/gl.dir/build.make CMakeFiles/gl.dir/src/birdsEye.cpp.i
 .PHONY : src/birdsEye.cpp.i
 
@@ -213,6 +217,8 @@ src/birdsEye.s: src/birdsEye.cpp.s
 
 # target to generate assembly for a file
 src/birdsEye.cpp.s:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/birdsEye.cpp.s
+	$(MAKE) -f CMakeFiles/DE.dir/build.make CMakeFiles/DE.dir/src/birdsEye.cpp.s
 	$(MAKE) -f CMakeFiles/gl.dir/build.make CMakeFiles/gl.dir/src/birdsEye.cpp.s
 .PHONY : src/birdsEye.cpp.s
 
@@ -270,33 +276,6 @@ src/main.cpp.s:
 	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
-src/pixelcalculato.o: src/pixelcalculato.cpp.o
-
-.PHONY : src/pixelcalculato.o
-
-# target to build an object file
-src/pixelcalculato.cpp.o:
-	$(MAKE) -f CMakeFiles/gl.dir/build.make CMakeFiles/gl.dir/src/pixelcalculato.cpp.o
-.PHONY : src/pixelcalculato.cpp.o
-
-src/pixelcalculato.i: src/pixelcalculato.cpp.i
-
-.PHONY : src/pixelcalculato.i
-
-# target to preprocess a source file
-src/pixelcalculato.cpp.i:
-	$(MAKE) -f CMakeFiles/gl.dir/build.make CMakeFiles/gl.dir/src/pixelcalculato.cpp.i
-.PHONY : src/pixelcalculato.cpp.i
-
-src/pixelcalculato.s: src/pixelcalculato.cpp.s
-
-.PHONY : src/pixelcalculato.s
-
-# target to generate assembly for a file
-src/pixelcalculato.cpp.s:
-	$(MAKE) -f CMakeFiles/gl.dir/build.make CMakeFiles/gl.dir/src/pixelcalculato.cpp.s
-.PHONY : src/pixelcalculato.cpp.s
-
 test/test.o: test/test.cpp.o
 
 .PHONY : test/test.o
@@ -348,9 +327,6 @@ help:
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
-	@echo "... src/pixelcalculato.o"
-	@echo "... src/pixelcalculato.i"
-	@echo "... src/pixelcalculato.s"
 	@echo "... test/test.o"
 	@echo "... test/test.i"
 	@echo "... test/test.s"

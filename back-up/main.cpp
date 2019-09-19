@@ -14,25 +14,6 @@
 
 #include <typeinfo>
 
-/*
- * Program developed by CANM
- * Contact person: Ergun Yavuz
- * email:  Ergun.Yavuz@ServiceXpert.de and Mohammed.Chand@ServiceXpert.de
- *
- */
-
-
-/* TODO: DONE
- * TODO: include all the headers of ARUCO
- * TODO: locate the ARUCO Marker with a test program
- * TODO: locate the average depth of a bounded region using the SDK functions
- * TODO: Integrate both the functions
- * TODO: cv::Mat to sl::Mat conversion
- * TODO: Tracking ?
- *
- * /
-
- */
 
 
 int main(int argc, char* argv[] ) {

@@ -1,1 +1,1 @@
-/usr/bin/c++ -fPIC -g  -shared -Wl,-soname,libgl.so -o libgl.so CMakeFiles/gl.dir/src/GLViewer.cpp.o CMakeFiles/gl.dir/src/birdsEye.cpp.o CMakeFiles/gl.dir/src/pixelcalculato.cpp.o 
+/usr/bin/c++ -fPIC -g  -shared -Wl,-soname,libgl.so -o libgl.so CMakeFiles/gl.dir/src/GLViewer.cpp.o CMakeFiles/gl.dir/src/birdsEye.cpp.o 

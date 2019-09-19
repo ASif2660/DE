@@ -5,10 +5,13 @@
 //#include "aruco.hpp"
 
 #include "opencv2/aruco.hpp"
+#include <string>
+#include <vector>
 
 // OCV includes
 #include <opencv2/opencv.hpp>
 #include <birdsEye.h>
+
 using namespace sl;
 using namespace std;
 
@@ -31,6 +34,7 @@ int main(int argc, char **argv) {
     init_params.coordinate_units = UNIT_MILLIMETER;
 
     init_params.camera_disable_imu = true; // for this sample, IMU (of ZED-M) is disable, we use the gravity given by the marker.
+
 
 
 
@@ -73,6 +77,26 @@ int main(int argc, char **argv) {
     camera_matrix(1, 2) = calibInfo.cy;
 
 
+    // BirdsEye Params the class object
+    cv::Mat frame;
+    cv::Mat img_denoise;
+    cv::Mat img_edges;
+    cv::Mat img_mask;
+    cv::Mat img_lines;
+    std::vector<cv::Vec4i> lines;
+    std::vector<std::vector<cv::Vec4i> > left_right_lines;
+    std::vector<cv::Point> lane;
+    std::string turn;
+    int flag_plot = -1;
+    int iterator = 0;
+    float fx_camera = calibInfo.fx;
+    float fy_camera = calibInfo.fy;
+    cv::Mat warped_image;
+    cv::Mat lane_image;
+
+
+
+
 
     cv::Matx<float, 4, 1> dist_coeffs = cv::Vec4f::zeros();
 
@@ -84,7 +108,7 @@ int main(int argc, char **argv) {
 
 
 
-    cout << "Make sure the ArUco marker is a 6x6 (100), measuring " << actual_marker_size_meters * 1000 << " mm" << endl;
+    cout << " Is the ARUCO Marker 6x6 ?, check " << actual_marker_size_meters * 1000 << " mm" << endl;
 
 
 
@@ -100,17 +124,11 @@ int main(int argc, char **argv) {
 
     string position_txt;
 
-
-
     sl::Mat point_cloud;
 
     sl::float4 point_cloud_value;
 
-
-
     bool can_reset = false;
-
-
 
     zed.enableTracking();
 
@@ -143,10 +161,7 @@ int main(int argc, char **argv) {
 
             zed.getPosition(zed_pose);
 
-
-
             zed.retrieveMeasure(point_cloud, MEASURE_XYZBGRA);
-
 
 
             // display ZED position
@@ -160,6 +175,8 @@ int main(int argc, char **argv) {
             cv::putText(image_ocv_rgb, position_txt, cv::Point(10, 35), cv::FONT_HERSHEY_SIMPLEX, 0.6, cv::Scalar(236, 188, 26));
 
 
+
+
             // if at least one marker detected
 
             if (ids.size() > 0) {
@@ -170,11 +187,11 @@ int main(int argc, char **argv) {
 
                 pose.setRotationVector(sl::float3(rvecs[0](0), rvecs[0](1), rvecs[0](2)));
 
+                auto rot_matrix = pose.getRotationMatrix();
+
                 pose.inverse();
 
                 can_reset = true;
-
-
 
                 cv::aruco::drawDetectedMarkers(image_ocv_rgb, corners, ids);
 
@@ -189,13 +206,7 @@ int main(int argc, char **argv) {
 
         //        surroundEye.scalingFactor(corners, zed.getResolution());
 
-
-
-
-
                 point_cloud.getValue(x, y, &point_cloud_value);
-
-
 
 
                 float distance = sqrt(point_cloud_value.x * point_cloud_value.x + point_cloud_value.y * point_cloud_value.y + point_cloud_value.z * point_cloud_value.z);
@@ -207,6 +218,8 @@ int main(int argc, char **argv) {
                 cv::putText(image_ocv_rgb, position_txt, cv::Point(10, 60), cv::FONT_HERSHEY_SIMPLEX, 0.6, cv::Scalar(124, 252, 124));
 
 
+//                std::cout << image_ocv_rgb.size <<"the size of the image " << std::endl;
+
 
 
 
@@ -217,27 +230,59 @@ int main(int argc, char **argv) {
                 can_reset = false;
 
 
+            cv::Mat final_image = image_ocv_rgb;
 
-            // Display image
+            birdsEye surroundEye(image_ocv_rgb, fx_camera, fy_camera);
 
-            cv::imshow("Image", image_ocv_rgb);
+            img_denoise = surroundEye.deNoise(image_ocv_rgb);
+
+            img_edges = surroundEye.edgeDetector(img_denoise);
+
+            img_mask = surroundEye.mask(img_edges);
+
+            lines = surroundEye.houghLines(img_mask);
+
+           // cv::Mat top_view = surroundEye.birdsEyeFunction(image_ocv_rgb);
 
 
-            birdsEye surroundEye(image_ocv_rgb, camera_matrix, calibInfo);
 
-            surroundEye.trackbarFunction();
 
+            if (!lines.empty()) {
+                // Separate lines into left and right lines
+                left_right_lines = surroundEye.lineSeparation(lines, img_edges);
+
+                // Apply regression to obtain only one line for each side of the lane
+                lane = surroundEye.regression(left_right_lines, image_ocv_rgb);
+
+                // Predict the turn by determining the vanishing point of the the lines
+                turn = surroundEye.predictTurn();
+
+                // Plot lane detection
+                lane_image = surroundEye.plotLane(image_ocv_rgb, lane, turn);
+
+                warped_image = surroundEye.birdsEyeFunction(lane_image);
+
+
+                iterator += 1;
+
+
+            }
+
+       /*     std::cout << warped_image.size << std::endl;
+            std::cout << final_image.size << std::endl;
+*/
+
+           cv::imshow("Image", warped_image);
+           cv::imshow("ActualImage", final_image);
 
             key = cv::waitKey(10);
-
-
 
 
             // Handle key event
 
             // if KEY_R is pressed and aruco marker is visible, then reset ZED position
 
-            if ((key == ' ') && can_reset)
+            if (key == ' ')
 
                 zed.resetTracking(pose);
 

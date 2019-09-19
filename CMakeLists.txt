@@ -49,7 +49,7 @@ target_link_libraries(myLib ${OpenCV_LIBS})
 
 #CREATE EXECUTABLE
 
-add_executable(DE test/test.cpp )
+add_executable(DE test/test.cpp include/zed2cv.h src/birdsEye.cpp include/centroid.h)
 add_executable(main src/main.cpp include/zed2cv.h src/birdsEye.cpp)
 
 
@@ -68,7 +68,7 @@ target_link_libraries(main myLib)
 SET(ZED_LIBS ${ZED_LIBRARIES} ${CUDA_CUDA_LIBRARY} ${CUDA_CUDART_LIBRARY} ${CUDA_NPP_LIBRARIES_ZED} pthread X11)
 
 
-target_link_libraries(DE ${ZED_LIBS} ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${GLEW_LIBRARY} )
+target_link_libraries(DE ${ZED_LIBS} ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${GLEW_LIBRARY} ${OpenCV_LIBRARIES} )
 target_link_libraries(main ${ZED_LIBS} ${OpenCV_LIBRARIES} )
 
 

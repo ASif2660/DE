@@ -1,5 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/main.dir/src/main.cpp.o"
+  "CMakeFiles/main.dir/src/birdsEye.cpp.o"
   "main.pdb"
   "main"
 )

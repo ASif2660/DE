@@ -1,85 +1,134 @@
-//
-// Created by asif on 09.09.19.
-//
 
-
-#include "../include/GLViewer.hpp"
 #include "sl/Camera.hpp"
-/*
- * Program developed by CANM
- * Contact person: Ergun Yavuz
- * email:  Ergun.Yavuz@ServiceXpert.de and Mohammed.Chand@ServiceXpert.de
- *
- */
+#include "opencv2/aruco.hpp"
+#include <opencv2/opencv.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/core/core.hpp>
+#include "zed2cv.h"
+#include <iostream>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <birdsEye.h>
 
 
-/* TODO: include all the headers of the SDK
- * TODO: include all the headers of ARUCO
- * TODO: locate the ARUCO Marker with a test program
- * TODO: locate the average depth of a bounded region using the SDK functions
- * TODO: Integrate both the functions
- * TODO: cv::Mat to sl::Mat conversion
- * TODO: Tracking ?
- *
- * /
-
- */
 
 
-using namespace sl;
-using namespace std;
+#include <typeinfo>
+
 
 
 int main(int argc, char* argv[] ) {
 
+    //initialize the Configuration parameters of the ZED Camera
+
+    sl::InitParameters init_params;
+    //  init_params.enable_right_side_measure = true;
+    init_params.depth_mode = sl::DEPTH_MODE_ULTRA;
+    init_params.coordinate_units = sl::UNIT_MILLIMETER;
 
 
-    Camera zed;
-    // Set configuration parameters for the ZED
-    InitParameters initParameters;
-    initParameters.depth_mode = DEPTH_MODE_ULTRA;
-    initParameters.coordinate_system = COORDINATE_SYSTEM_RIGHT_HANDED_Y_UP; // OpenGL's coordinate system is right_handed
-    // open SVO if one given as parameter
-    if(argc > 1 && string(argv[1]).find(".svo"))
-        initParameters.svo_input_filename = argv[1];
+    std::vector<int> markerIds;
+    std::vector<std::vector<cv::Point2f>> markerCorners;
+    cv::Ptr<cv::aruco::Dictionary> dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_6X6_250);
 
-    // Open the camera
-    ERROR_CODE zed_error = zed.open(initParameters);
 
-    if(zed_error != SUCCESS) {// Quit if an error occurred
-        cout << zed_error << endl;
-        zed.close();
-        return 1;
+
+
+    // Define the Camera Object and related data types
+    sl::Camera zed;
+    sl::ERROR_CODE zed_camera_error = zed.open(init_params);
+    sl::Mat depth_image(zed.getResolution(), sl::MAT_TYPE_8U_C1); // this is going to be an RGBA image
+    sl::Mat image_full(zed.getResolution(), sl::MAT_TYPE_8U_C4);
+    sl::Mat depth_calculate(zed.getResolution(), sl::MAT_TYPE_32F_C1);
+    float depth_center_pixel = 0;
+    cv::int16_t x = 0;
+    cv::int16_t y = 0;
+
+
+
+    // BirdsEye Params the class object
+    cv::Mat frame;
+    cv::Mat img_denoise;
+    cv::Mat img_edges;
+    cv::Mat img_mask;
+    cv::Mat img_lines;
+    std::vector<cv::Vec4i> lines;
+    std::vector<std::vector<cv::Vec4i> > left_right_lines;
+    std::vector<cv::Point> lane;
+    std::string turn;
+    int flag_plot = -1;
+    int iterator = 0;
+    float fx_camera =  zed.getCameraInformation().calibration_parameters.left_cam.fx;
+    float fy_camera =  zed.getCameraInformation().calibration_parameters.left_cam.fy;
+
+    cv::Mat final_image;
+
+
+
+
+
+    while (1) {
+        if (zed.grab() == sl::SUCCESS) { //1280x720
+
+
+
+            zed.retrieveImage(image_full, sl::VIEW_LEFT);
+
+
+            cv::Mat cv_RGB_image = slMat2cvMat(image_full);
+
+            cvtColor(cv_RGB_image, cv_RGB_image, CV_RGBA2RGB);
+
+
+            birdsEye surroundEye(cv_RGB_image, fx_camera, fy_camera);
+
+            img_denoise = surroundEye.deNoise(cv_RGB_image);
+
+            img_edges = surroundEye.edgeDetector(img_denoise);
+
+            img_mask = surroundEye.mask(img_edges);
+
+            lines = surroundEye.houghLines(img_mask);
+
+
+
+
+            if (!lines.empty()) {
+                // Separate lines into left and right lines
+                left_right_lines = surroundEye.lineSeparation(lines, img_edges);
+
+                // Apply regression to obtain only one line for each side of the lane
+                lane = surroundEye.regression(left_right_lines, cv_RGB_image);
+
+                // Predict the turn by determining the vanishing point of the the lines
+                turn = surroundEye.predictTurn();
+
+                // Plot lane detection
+                cv::Mat with_lane_image = surroundEye.plotLane(cv_RGB_image, lane, turn);
+
+                cv::Mat warpedImage = surroundEye.birdsEyeFunction(with_lane_image);
+
+
+                cv::imshow("totalImage", warpedImage);
+
+                cv::waitKey(50);
+
+              //  iterator += 1;
+
+            }
+
+         //   cv::imshow("Final_image", final_image);
+
+        //    cv::imshow("Test", cv_RGB_image);
+
+            //cv::waitKey(100);
+
+        } else sl::sleep_ms(10);
+
     }
+        cv::destroyAllWindows();
 
-    Resolution resolution = zed.getResolution();
-    CameraParameters camera_parameters = zed.getCameraInformation().calibration_parameters.left_cam;
-
-    // Point cloud viewer
-    GLViewer viewer;
-    // Initialize point cloud viewer
-    viewer.init(argc, argv, camera_parameters);
-
-    // Allocation of 4 channels of float on GPU
-    Mat point_cloud(resolution, MAT_TYPE_32F_C4, MEM_GPU);
-    Mat ImageLeft;
-
-
-    // Main Loop
-    while(viewer.isAvailable()) {
-        if(zed.grab() == SUCCESS) {
-            zed.retrieveMeasure(point_cloud, MEASURE_XYZRGBA, MEM_GPU);
-            // zed.retrieveMeasure(ImageLeft, VIEW_LEFT);
-            viewer.updatePointCloud(point_cloud);
-        } else sleep_ms(1);
-    }
-    // free allocated memory before closing the ZED
-    point_cloud.free();
-
-    // close the ZED
-    zed.close();
-
-    return 0;
+        return 0;
 
 
 }
+

@@ -260,16 +260,19 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/asif/CLionProjects/DE/include/birdsEye.h">
-			<Option target="main"/>
+		<Unit filename="/home/asif/CLionProjects/DE/include/centroid.h">
+			<Option target="DE"/>
 		</Unit>
 		<Unit filename="/home/asif/CLionProjects/DE/include/zed2cv.h">
 			<Option target="main"/>
+			<Option target="DE"/>
 		</Unit>
 		<Unit filename="/home/asif/CLionProjects/DE/src/GLViewer.cpp">
 			<Option target="gl"/>
 		</Unit>
 		<Unit filename="/home/asif/CLionProjects/DE/src/birdsEye.cpp">
+			<Option target="main"/>
+			<Option target="DE"/>
 			<Option target="gl"/>
 		</Unit>
 		<Unit filename="/home/asif/CLionProjects/DE/src/depth_estimator.cpp">
@@ -277,9 +280,6 @@
 		</Unit>
 		<Unit filename="/home/asif/CLionProjects/DE/src/main.cpp">
 			<Option target="main"/>
-		</Unit>
-		<Unit filename="/home/asif/CLionProjects/DE/src/pixelcalculato.cpp">
-			<Option target="gl"/>
 		</Unit>
 		<Unit filename="/home/asif/CLionProjects/DE/test/test.cpp">
 			<Option target="DE"/>
