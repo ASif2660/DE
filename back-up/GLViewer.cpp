@@ -19,12 +19,10 @@ GLchar* FRAGMENT_SHADER =
 "   out_Color = vec4(b_color, 1);\n"
 "}";
 
-using namespace sl;
-
 GLViewer* currentInstance_ = nullptr;
 
-GLViewer::GLViewer() : available(false) {
-    currentInstance_ = this;
+GLViewer::GLViewer() : available(false){
+    currentInstance_ = this;    
     mouseButton_[0] = mouseButton_[1] = mouseButton_[2] = false;
     clearInputs();
     previousMouseMotion_[0] = previousMouseMotion_[1] = 0;
@@ -33,7 +31,10 @@ GLViewer::GLViewer() : available(false) {
 GLViewer::~GLViewer() {}
 
 void GLViewer::exit() {
-    available = false;    
+    if (currentInstance_) {
+        pointCloud_.close();
+        available = false;
+    }
 }
 
 bool GLViewer::isAvailable() {
@@ -42,39 +43,56 @@ bool GLViewer::isAvailable() {
     return available;
 }
 
+Simple3DObject createFrustum(sl::CameraParameters param) {
+
+    // Create 3D axis
+    Simple3DObject it(sl::Translation(0, 0, 0), true);
+
+    float Z_ = -150;
+    sl::float3 cam_0(0, 0, 0);
+    sl::float3 cam_1, cam_2, cam_3, cam_4;
+
+    float fx_ = 1.f / param.fx;
+    float fy_ = 1.f / param.fy;
+
+    cam_1.z = Z_;
+    cam_1.x = (0 - param.cx) * Z_ *fx_;
+    cam_1.y = (0 - param.cy) * Z_ *fy_;
+
+    cam_2.z = Z_;
+    cam_2.x = (param.image_size.width - param.cx) * Z_ *fx_;
+    cam_2.y = (0 - param.cy) * Z_ *fy_;
+
+    cam_3.z = Z_;
+    cam_3.x = (param.image_size.width - param.cx) * Z_ *fx_;
+    cam_3.y = (param.image_size.height - param.cy) * Z_ *fy_;
+
+    cam_4.z = Z_;
+    cam_4.x = (0 - param.cx) * Z_ *fx_;
+    cam_4.y = (param.image_size.height - param.cy) * Z_ *fy_;
+
+    sl::float3 clr(0.2f, 0.5f, 0.8f);
+
+    it.addFace(cam_0, cam_1, cam_2, clr);
+    it.addFace(cam_0, cam_2, cam_3, clr);
+    it.addFace(cam_0, cam_3, cam_4, clr);
+    it.addFace(cam_0, cam_4, cam_1, clr);
+    
+    it.setDrawingType(GL_TRIANGLES);
+    return it;
+}
+
 void CloseFunc(void) { if(currentInstance_) currentInstance_->exit(); }
 
-void fillZED(int nb_tri, float *vertices, int *triangles, sl::float3 color, Simple3DObject *zed_camera) {
-    for (int p = 0; p < nb_tri * 3; p = p + 3) {
-        int index = triangles[p] - 1;
-        zed_camera->addPoint(vertices[index * 3], vertices[index * 3 + 1], vertices[index * 3 + 2], color.r, color.g, color.b);
-        index = triangles[p + 1] - 1;
-        zed_camera->addPoint(vertices[index * 3], vertices[index * 3 + 1], vertices[index * 3 + 2], color.r, color.g, color.b);
-        index = triangles[p + 2] - 1;
-        zed_camera->addPoint(vertices[index * 3], vertices[index * 3 + 1], vertices[index * 3 + 2], color.r, color.g, color.b);
-    }
-}
+void GLViewer::init(int argc, char **argv, sl::CameraParameters param) {
 
-void addVert(Simple3DObject &obj, float i_f, float limit, sl::float3 &clr) {
-    auto p1 = sl::float3(i_f, 0, -limit);
-    auto p2 = sl::float3(i_f, 0, limit);
-    auto p3 = sl::float3(-limit, 0, i_f);
-    auto p4 = sl::float3(limit, 0, i_f);
-
-    obj.addLine(p1, p2, clr);
-    obj.addLine(p3, p4, clr);
-}
-
-void GLViewer::init(int argc, char **argv, sl::MODEL camera_model) {
     glutInit(&argc, argv);
-
     int wnd_w = glutGet(GLUT_SCREEN_WIDTH);
     int wnd_h = glutGet(GLUT_SCREEN_HEIGHT) *0.9;
     glutInitWindowSize(wnd_w*0.9, wnd_h*0.9);
     glutInitWindowPosition(wnd_w*0.05, wnd_h*0.05);
-
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-    glutCreateWindow("ZED Positional Tracking");
+    glutCreateWindow("ZED Depth Sensing");
 
     GLenum err = glewInit();
     if (GLEW_OK != err)
@@ -82,62 +100,22 @@ void GLViewer::init(int argc, char **argv, sl::MODEL camera_model) {
 
     glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_LINE_SMOOTH);
-    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-    
+
+    pointCloud_.initialize(param.image_size);
+
     // Compile and create the shader
-    mainShader.it = Shader(VERTEX_SHADER, FRAGMENT_SHADER);
-    mainShader.MVP_Mat = glGetUniformLocation(mainShader.it.getProgramId(), "u_mvpMatrix");
-    
-    shaderLine.it = Shader(VERTEX_SHADER, FRAGMENT_SHADER);
-    shaderLine.MVP_Mat = glGetUniformLocation(shaderLine.it.getProgramId(), "u_mvpMatrix");
+    shader_ = Shader(VERTEX_SHADER, FRAGMENT_SHADER);
+    shMVPMatrixLoc_ = glGetUniformLocation(shader_.getProgramId(), "u_mvpMatrix");
 
     // Create the camera
-    camera_ = CameraGL(sl::Translation(0.3, 3.3, -3.3), sl::Translation(0, 0, -4));
-    camera_.setOffsetFromPosition(sl::Translation(0, 0, 1));
-    sl::float3 euler(-50, 180, 0);
-    sl::Rotation cam_rot;
-    cam_rot.setEulerAngles(euler, 0);
-    camera_.setRotation(sl::Rotation(cam_rot));
-    
-    floor_grid = Simple3DObject(sl::Translation(0, 0, 0), true);
-    floor_grid.setDrawingType(GL_LINES);
+    camera_ = CameraGL(sl::Translation(0, 0, 0), sl::Translation(0, 0, -100));
+    camera_.setOffsetFromPosition(sl::Translation(0, 0, 5000));
 
-    float limit = 20.f;
-
-    sl::float3 clr1(218, 223, 225);
-    clr1 /= 255.f;
-    sl::float3 clr2(108, 122, 137);
-    clr2 /= 255.f;
-    for(int i = (int) (limit * -5); i <= (int) (limit * 5); i++) {
-        float i_f = i / 5.f;
-        if((i % 5) == 0)
-            addVert(floor_grid, i_f, limit, clr2);
-        else
-            addVert(floor_grid, i_f, limit, clr1);
-    }
-
-    floor_grid.pushToGPU();
+    frustum = createFrustum(param);
+    frustum.pushToGPU();
 
     bckgrnd_clr = sl::float3(223, 230, 233);
     bckgrnd_clr /= 255.f;
-
-    zedPath.setDrawingType(GL_LINE_STRIP);
-
-    Model3D *model;
-    if (camera_model == sl::MODEL_ZED)
-        model = new Model3D_ZED;
-    else
-        model = new Model3D_ZED_M;
-    for (auto it: model->part)
-        fillZED(it.nb_triangles, model->vertices, it.triangles, it.color, &zedModel);
-    delete model;
-
-    zedModel.pushToGPU();
-
-    updateZEDposition = false;
 
     // Map glut function on this class methods
     glutDisplayFunc(GLViewer::drawCallback);
@@ -147,7 +125,7 @@ void GLViewer::init(int argc, char **argv, sl::MODEL camera_model) {
     glutKeyboardFunc(GLViewer::keyPressedCallback);
     glutKeyboardUpFunc(GLViewer::keyReleasedCallback);
     glutCloseFunc(CloseFunc);
-    
+
     available = true;
 }
 
@@ -155,12 +133,19 @@ void GLViewer::render() {
     if (available) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(bckgrnd_clr.r, bckgrnd_clr.g, bckgrnd_clr.b, 1.f);
+        glLineWidth(2.f);
+        glPointSize(1.f);
         update();
         draw();
-        printText();
         glutSwapBuffers();
         glutPostRedisplay();
     }
+}
+
+void GLViewer::updatePointCloud(sl::Mat &matXYZRGBA) {
+    pointCloud_.mutexData.lock();
+    pointCloud_.pushNewPC(matXYZRGBA);
+    pointCloud_.mutexData.unlock();
 }
 
 void GLViewer::update() {
@@ -191,105 +176,29 @@ void GLViewer::update() {
         }
     }
     
-    // update 
+    // Update point cloud buffers
+    pointCloud_.mutexData.lock();
+    pointCloud_.update();
+    pointCloud_.mutexData.unlock();
     camera_.update();
     clearInputs();
-    mtx.lock();
-    if (updateZEDposition) {
-        zedPath.clear();
-        sl::float3 clr(0.1f, 0.5f, 0.9f);
-        for (int i = 1; i < vecPath.size(); i++) {
-            float fade = (i*1.f) / vecPath.size();
-            sl::float3 new_color = clr * fade;
-            zedPath.addPoint(vecPath[i], new_color);
-        }
-        zedPath.pushToGPU();
-        updateZEDposition = false;
-    }
-    mtx.unlock();
 }
 
 void GLViewer::draw() {
     const sl::Transform vpMatrix = camera_.getViewProjectionMatrix();
 
     // Simple 3D shader for simple 3D objects
-    glUseProgram(shaderLine.it.getProgramId());
-    glUniformMatrix4fv(shaderLine.MVP_Mat, 1, GL_TRUE, vpMatrix.m);
-    glLineWidth(1.f);
-    floor_grid.draw();
+    glUseProgram(shader_.getProgramId());
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    // Axis
+    glUniformMatrix4fv(shMVPMatrixLoc_, 1, GL_FALSE, sl::Transform::transpose(vpMatrix * frustum.getModelMatrix()).m);
+    frustum.draw();
     glUseProgram(0);
 
-    glUseProgram(mainShader.it.getProgramId());
-    glUniformMatrix4fv(mainShader.MVP_Mat, 1, GL_TRUE, vpMatrix.m);
-
-    glLineWidth(2.f);
-    zedPath.draw();
-
-    // Move the ZED 3D model to correct position
-    glUniformMatrix4fv(mainShader.MVP_Mat, 1, GL_FALSE, (sl::Transform::transpose(zedModel.getModelMatrix()) *  sl::Transform::transpose(vpMatrix)).m);
-    zedModel.draw();
-
-    glUseProgram(0);
-}
-
-void GLViewer::updateData(sl::Transform zed_rt, std::string str_t, std::string str_r, sl::TRACKING_STATE state) {
-    mtx.lock();
-    vecPath.push_back(zed_rt.getTranslation());
-    zedModel.setRT(zed_rt);
-    updateZEDposition = true;
-    txtT = str_t;
-    txtR = str_r;
-    trackState = state;
-    mtx.unlock();
-}
-
-static void safe_glutBitmapString(void *font, const char *str) {
-    for (size_t x = 0; x < strlen(str); ++x)
-        glutBitmapCharacter(font, str[x]);
-}
-
-void GLViewer::printText() {
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    int w_wnd = glutGet(GLUT_WINDOW_WIDTH);
-    int h_wnd = glutGet(GLUT_WINDOW_HEIGHT);
-    glOrtho(0, w_wnd, 0, h_wnd, -1.0f, 1.0f);
-
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();
-
-    int start_w = 20;
-    int start_h = h_wnd - 40;
-
-    (trackState == sl::TRACKING_STATE_OK) ? glColor3f(0.2f, 0.65f, 0.2f) : glColor3f(0.85f, 0.2f, 0.2f);
-    glRasterPos2i(start_w, start_h);
-    std::string track_str = (str_tracking + sl::toString(trackState).c_str());
-    safe_glutBitmapString(GLUT_BITMAP_HELVETICA_18, track_str.c_str());
-
-    float dark_clr = 0.12f;
-    glColor3f(dark_clr, dark_clr, dark_clr);
-    glRasterPos2i(start_w, start_h - 25);
-    safe_glutBitmapString(GLUT_BITMAP_HELVETICA_18, "Translation (m) :");
-
-    glColor3f(0.4980f, 0.5490f, 0.5529f);
-    glRasterPos2i(155, start_h - 25);
-
-    safe_glutBitmapString(GLUT_BITMAP_HELVETICA_18, txtT.c_str());
-
-    glColor3f(dark_clr, dark_clr, dark_clr);
-    glRasterPos2i(start_w, start_h - 50);
-    safe_glutBitmapString(GLUT_BITMAP_HELVETICA_18, "Rotation   (rad) :");
-
-    glColor3f(0.4980f, 0.5490f, 0.5529f);
-    glRasterPos2i(155, start_h - 50);
-    safe_glutBitmapString(GLUT_BITMAP_HELVETICA_18, txtR.c_str());
-
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
+    // Draw point cloud with its own shader
+    pointCloud_.draw(vpMatrix);
 }
 
 void GLViewer::clearInputs() {
@@ -345,14 +254,7 @@ void GLViewer::idle() {
     glutPostRedisplay();
 }
 
-Simple3DObject::Simple3DObject(): isStatic_(false) {
-    vaoID_ = 0;
-    drawingType_ = GL_TRIANGLES;
-    position_ = sl::float3(0, 0, 0);
-    rotation_.setIdentity();
-}
-
-Simple3DObject::Simple3DObject(Translation position, bool isStatic): isStatic_(isStatic) {
+Simple3DObject::Simple3DObject(sl::Translation position, bool isStatic): isStatic_(isStatic) {
     vaoID_ = 0;
     drawingType_ = GL_TRIANGLES;
     position_ = position;
@@ -366,24 +268,24 @@ Simple3DObject::~Simple3DObject() {
     }
 }
 
-void Simple3DObject::addPoint(sl::float3 position, sl::float3 color) {
-    addPoint(position.x, position.y, position.z, color.r, color.g, color.b);
-}
-
-void Simple3DObject::addPoint(float x, float y, float z, float r, float g, float b) {
-    vertices_.push_back(x);
-    vertices_.push_back(y);
-    vertices_.push_back(z);
-    colors_.push_back(r);
-    colors_.push_back(g);
-    colors_.push_back(b);
+void Simple3DObject::addPoint(sl::float3 pt, sl::float3 clr) {
+    vertices_.push_back(pt.x);
+    vertices_.push_back(pt.y);
+    vertices_.push_back(pt.z);
+    colors_.push_back(clr.r);
+    colors_.push_back(clr.g);
+    colors_.push_back(clr.b);
     indices_.push_back((int) indices_.size());
 }
 
-void Simple3DObject::addLine(sl::float3 p1, sl::float3 p2, sl::float3 clr) {
+void Simple3DObject::addFace(sl::float3 p1, sl::float3 p2, sl::float3 p3, sl::float3 clr) {
     vertices_.push_back(p1.x);
     vertices_.push_back(p1.y);
     vertices_.push_back(p1.z);
+
+    colors_.push_back(clr.r);
+    colors_.push_back(clr.g);
+    colors_.push_back(clr.b);
 
     vertices_.push_back(p2.x);
     vertices_.push_back(p2.y);
@@ -393,10 +295,15 @@ void Simple3DObject::addLine(sl::float3 p1, sl::float3 p2, sl::float3 clr) {
     colors_.push_back(clr.g);
     colors_.push_back(clr.b);
 
+    vertices_.push_back(p3.x);
+    vertices_.push_back(p3.y);
+    vertices_.push_back(p3.z);
+
     colors_.push_back(clr.r);
     colors_.push_back(clr.g);
     colors_.push_back(clr.b);
 
+    indices_.push_back((int) indices_.size());
     indices_.push_back((int) indices_.size());
     indices_.push_back((int) indices_.size());
 }
@@ -438,48 +345,46 @@ void Simple3DObject::setDrawingType(GLenum type) {
 }
 
 void Simple3DObject::draw() {
-    if(indices_.size() && vaoID_) {
-        glBindVertexArray(vaoID_);
-        glDrawElements(drawingType_, (GLsizei) indices_.size(), GL_UNSIGNED_INT, 0);
-        glBindVertexArray(0);
-    }
+    glBindVertexArray(vaoID_);
+    glDrawElements(drawingType_, (GLsizei) indices_.size(), GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
 }
 
-void Simple3DObject::translate(const Translation& t) {
+void Simple3DObject::translate(const sl::Translation& t) {
     position_ = position_ + t;
 }
 
-void Simple3DObject::setPosition(const Translation& p) {
+void Simple3DObject::setPosition(const sl::Translation& p) {
     position_ = p;
 }
 
-void Simple3DObject::setRT(const Transform& mRT) {
+void Simple3DObject::setRT(const sl::Transform& mRT) {
     position_ = mRT.getTranslation();
     rotation_ = mRT.getOrientation();
 }
 
-void Simple3DObject::rotate(const Orientation& rot) {
+void Simple3DObject::rotate(const sl::Orientation& rot) {
     rotation_ = rot * rotation_;
 }
 
-void Simple3DObject::rotate(const Rotation& m) {
+void Simple3DObject::rotate(const sl::Rotation& m) {
     this->rotate(sl::Orientation(m));
 }
 
-void Simple3DObject::setRotation(const Orientation& rot) {
+void Simple3DObject::setRotation(const sl::Orientation& rot) {
     rotation_ = rot;
 }
 
-void Simple3DObject::setRotation(const Rotation& m) {
+void Simple3DObject::setRotation(const sl::Rotation& m) {
     this->setRotation(sl::Orientation(m));
 }
 
-const Translation& Simple3DObject::getPosition() const {
+const sl::Translation& Simple3DObject::getPosition() const {
     return position_;
 }
 
-Transform Simple3DObject::getModelMatrix() const {
-    Transform tmp = Transform::identity();
+sl::Transform Simple3DObject::getModelMatrix() const {
+    sl::Transform tmp;
     tmp.setOrientation(rotation_);
     tmp.setTranslation(position_);
     return tmp;
@@ -561,18 +466,105 @@ bool Shader::compile(GLuint &shaderId, GLenum type, GLchar* src) {
     return true;
 }
 
+GLchar* POINTCLOUD_VERTEX_SHADER =
+"#version 330 core\n"
+"layout(location = 0) in vec4 in_VertexRGBA;\n"
+"uniform mat4 u_mvpMatrix;\n"
+"out vec4 b_color;\n"
+"void main() {\n"
+// Decompose the 4th channel of the XYZRGBA buffer to retrieve the color of the point (1float to 4uint)
+"   uint vertexColor = floatBitsToUint(in_VertexRGBA.w); \n"
+"   vec3 clr_int = vec3((vertexColor & uint(0x000000FF)), (vertexColor & uint(0x0000FF00)) >> 8, (vertexColor & uint(0x00FF0000)) >> 16);\n"
+"   b_color = vec4(clr_int.r / 255.0f, clr_int.g / 255.0f, clr_int.b / 255.0f, 1.f);"
+"	gl_Position = u_mvpMatrix * vec4(in_VertexRGBA.xyz, 1);\n"
+"}";
+
+GLchar* POINTCLOUD_FRAGMENT_SHADER =
+"#version 330 core\n"
+"in vec4 b_color;\n"
+"layout(location = 0) out vec4 out_Color;\n"
+"void main() {\n"
+"   out_Color = b_color;\n"
+"}";
+
+PointCloud::PointCloud(): hasNewPCL_(false) {
+}
+
+PointCloud::~PointCloud() {
+    close();
+}
+
+void checkError(cudaError_t err) {
+    if(err != cudaSuccess)
+        std::cerr << "Error: (" << err << "): " << cudaGetErrorString(err) << std::endl;
+}
+
+void PointCloud::close() {
+    if (matGPU_.isInit()) {
+        matGPU_.free();
+        checkError(cudaGraphicsUnmapResources(1, &bufferCudaID_, 0));
+        glDeleteBuffers(1, &bufferGLID_);
+    }
+}
+
+void PointCloud::initialize(sl::Resolution res) {
+    glGenBuffers(1, &bufferGLID_);
+    glBindBuffer(GL_ARRAY_BUFFER, bufferGLID_);
+    glBufferData(GL_ARRAY_BUFFER, res.area() * 4 * sizeof(float), 0, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    
+    checkError(cudaGraphicsGLRegisterBuffer(&bufferCudaID_, bufferGLID_, cudaGraphicsRegisterFlagsNone));
+
+    shader_ = Shader(POINTCLOUD_VERTEX_SHADER, POINTCLOUD_FRAGMENT_SHADER);
+    shMVPMatrixLoc_ = glGetUniformLocation(shader_.getProgramId(), "u_mvpMatrix");
+
+    matGPU_.alloc(res, sl::MAT_TYPE_32F_C4, sl::MEM_GPU);
+
+    checkError(cudaGraphicsMapResources(1, &bufferCudaID_, 0));
+    checkError(cudaGraphicsResourceGetMappedPointer((void**) &xyzrgbaMappedBuf_, &numBytes_, bufferCudaID_));
+}
+
+void PointCloud::pushNewPC(sl::Mat &matXYZRGBA) {
+    if (matGPU_.isInit()) {
+        matGPU_.setFrom(matXYZRGBA, sl::COPY_TYPE_GPU_GPU);
+        hasNewPCL_ = true;
+    }
+}
+
+void PointCloud::update() {
+    if (hasNewPCL_ && matGPU_.isInit()) {
+        checkError(cudaMemcpy(xyzrgbaMappedBuf_, matGPU_.getPtr<sl::float4>(sl::MEM_GPU), numBytes_, cudaMemcpyDeviceToDevice));
+        hasNewPCL_ = false;
+    }
+}
+
+void PointCloud::draw(const sl::Transform& vp) {
+    if (matGPU_.isInit()) {
+        glUseProgram(shader_.getProgramId());
+        glUniformMatrix4fv(shMVPMatrixLoc_, 1, GL_TRUE, vp.m);
+        
+        glBindBuffer(GL_ARRAY_BUFFER, bufferGLID_);
+        glVertexAttribPointer(Shader::ATTRIB_VERTICES_POS, 4, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(Shader::ATTRIB_VERTICES_POS);
+
+        glDrawArrays(GL_POINTS, 0, matGPU_.getResolution().area());
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glUseProgram(0);
+    }
+}
+
 const sl::Translation CameraGL::ORIGINAL_FORWARD = sl::Translation(0, 0, 1);
 const sl::Translation CameraGL::ORIGINAL_UP = sl::Translation(0, 1, 0);
 const sl::Translation CameraGL::ORIGINAL_RIGHT = sl::Translation(1, 0, 0);
 
-CameraGL::CameraGL(Translation position, Translation direction, Translation vertical) {
+CameraGL::CameraGL(sl::Translation position, sl::Translation direction, sl::Translation vertical) {
     this->position_ = position;
     setDirection(direction, vertical);
 
     offset_ = sl::Translation(0, 0, 0);
     view_.setIdentity();
     updateView();
-    setProjection(60, 60, 0.01f, 100.f);
+    setProjection(80, 80, 100.f, 900000.f);
     updateVPMatrix();
 }
 

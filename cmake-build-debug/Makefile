@@ -162,33 +162,6 @@ gl/fast:
 	$(MAKE) -f CMakeFiles/gl.dir/build.make CMakeFiles/gl.dir/build
 .PHONY : gl/fast
 
-src/GLViewer.o: src/GLViewer.cpp.o
-
-.PHONY : src/GLViewer.o
-
-# target to build an object file
-src/GLViewer.cpp.o:
-	$(MAKE) -f CMakeFiles/gl.dir/build.make CMakeFiles/gl.dir/src/GLViewer.cpp.o
-.PHONY : src/GLViewer.cpp.o
-
-src/GLViewer.i: src/GLViewer.cpp.i
-
-.PHONY : src/GLViewer.i
-
-# target to preprocess a source file
-src/GLViewer.cpp.i:
-	$(MAKE) -f CMakeFiles/gl.dir/build.make CMakeFiles/gl.dir/src/GLViewer.cpp.i
-.PHONY : src/GLViewer.cpp.i
-
-src/GLViewer.s: src/GLViewer.cpp.s
-
-.PHONY : src/GLViewer.s
-
-# target to generate assembly for a file
-src/GLViewer.cpp.s:
-	$(MAKE) -f CMakeFiles/gl.dir/build.make CMakeFiles/gl.dir/src/GLViewer.cpp.s
-.PHONY : src/GLViewer.cpp.s
-
 src/birdsEye.o: src/birdsEye.cpp.o
 
 .PHONY : src/birdsEye.o
@@ -315,9 +288,6 @@ help:
 	@echo "... DE"
 	@echo "... myLib"
 	@echo "... gl"
-	@echo "... src/GLViewer.o"
-	@echo "... src/GLViewer.i"
-	@echo "... src/GLViewer.s"
 	@echo "... src/birdsEye.o"
 	@echo "... src/birdsEye.i"
 	@echo "... src/birdsEye.s"

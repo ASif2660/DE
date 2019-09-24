@@ -1,28 +1,30 @@
-#ifndef __VIEWER_INCLUDE__
-#define __VIEWER_INCLUDE__
+#pragma once
 
-#include <vector>
-#include <mutex>
-
-#include <sl/Camera.hpp>
+#ifndef __GL_VIEWER_HDR__
+#define __GL_VIEWER_HDR__
 
 #include <GL/glew.h>
-#include <GL/freeglut.h>
-#include <GL/gl.h>
-#include <GL/glut.h>   /* OpenGL Utility Toolkit header */
+#include <GL/glut.h>    /* OpenGL Utility Toolkit header */
 
-#include <cuda.h>
-#include <cuda_gl_interop.h>
+#include <GL/freeglut.h>
+
+#include <math.h>
+#include <thread>         // std::thread
+#include <mutex>          // std::mutex
+
+#include "ZEDModel.hpp"    /* OpenGL Utility Toolkit header */
+#include <sl/Camera.hpp>
 
 #ifndef M_PI
-#define M_PI 3.141592653f
+#define M_PI 3.1416f
 #endif
 
-#define MOUSE_R_SENSITIVITY 0.015f
-#define MOUSE_UZ_SENSITIVITY 0.75f
-#define MOUSE_DZ_SENSITIVITY 1.25f
-#define MOUSE_T_SENSITIVITY 10.f
-#define KEY_T_SENSITIVITY 0.1f
+#define SAFE_DELETE( res ) if( res!=NULL )  { delete res; res = NULL; }
+
+#define MOUSE_R_SENSITIVITY 0.005f
+#define MOUSE_WHEEL_SENSITIVITY 0.065f
+#define MOUSE_T_SENSITIVITY 0.01f
+#define KEY_T_SENSITIVITY 0.01f
 
 class CameraGL {
 public:
@@ -31,7 +33,7 @@ public:
     enum DIRECTION {
         UP, DOWN, LEFT, RIGHT, FORWARD, BACK
     };
-    CameraGL(sl::Translation position, sl::Translation direction, sl::Translation vertical = sl::Translation(0, 1, 0)); // vertical = Eigen::Vector3f(0, 1, 0)
+    CameraGL(sl::Translation position, sl::Translation direction, sl::Translation vertical = sl::Translation(0, 1, 0));
     ~CameraGL();
 
     void update();
@@ -41,9 +43,6 @@ public:
     float getHorizontalFOV() const;
     float getVerticalFOV() const;
 
-    // Set an offset between the eye of the camera and its position
-    // Note: Useful to use the camera as a trackball camera with z>0 and x = 0, y = 0
-    // Note: coordinates are in local space
     void setOffsetFromPosition(const sl::Translation& offset);
     const sl::Translation& getOffsetFromPosition() const;
 
@@ -82,6 +81,9 @@ private:
 
     sl::Orientation rotation_;
 
+
+
+
     sl::Transform view_;
     sl::Transform vpMatrix_;
     float horizontalFieldOfView_;
@@ -110,12 +112,13 @@ private:
 class Simple3DObject {
 public:
 
-    Simple3DObject() {}
+    Simple3DObject();
     Simple3DObject(sl::Translation position, bool isStatic);
     ~Simple3DObject();
 
-    void addPoint(sl::float3 pt, sl::float3 clr);
-    void addFace(sl::float3 p1, sl::float3 p2, sl::float3 p3, sl::float3 clr);
+    void addPoint(float x, float y, float z, float r, float g, float b);
+    void addLine(sl::float3 p1, sl::float3 p2, sl::float3 clr);
+    void addPoint(sl::float3 position, sl::float3 color);
     void pushToGPU();
     void clear();
 
@@ -147,47 +150,21 @@ private:
 
     GLuint vaoID_;
     /*
-            Vertex buffer IDs:
-            - [0]: Vertices coordinates;
-            - [1]: Indices;
-     */
-    GLuint vboID_[2];
+    Vertex buffer IDs:
+    - [0]: Vertices coordinates;
+    - [1]: RGB color values;
+    - [2]: Indices;
+    */
+    GLuint vboID_[3];
 
     sl::Translation position_;
     sl::Orientation rotation_;
 
 };
 
-class PointCloud {
-public:
-    PointCloud();
-    ~PointCloud();
-
-    // Initialize Opengl and Cuda buffers
-    // Warning: must be called in the Opengl thread
-    void initialize(sl::Resolution res);
-    // Push a new point cloud
-    // Warning: can be called from any thread but the mutex "mutexData" must be locked
-    void pushNewPC(sl::Mat &matXYZRGBA);
-    // Update the Opengl buffer
-    // Warning: must be called in the Opengl thread
-    void update();
-    // Draw the point cloud
-    // Warning: must be called in the Opengl thread
-    void draw(const sl::Transform& vp);
-    // Close (disable update)
-    void close();
-    
-    std::mutex mutexData;
-private:
-    sl::Mat matGPU_;
-    bool hasNewPCL_ = false;
-    Shader shader_;
-    GLuint shMVPMatrixLoc_;
-    size_t numBytes_;
-    float* xyzrgbaMappedBuf_;
-    GLuint bufferGLID_;
-    cudaGraphicsResource* bufferCudaID_;
+struct ShaderData {
+    Shader it;
+    GLuint MVP_Mat;
 };
 
 // This class manages input events, window and Opengl rendering pipeline
@@ -195,12 +172,11 @@ class GLViewer {
 public:
     GLViewer();
     ~GLViewer();
-    bool isAvailable();
-
-    void init(int argc, char **argv, sl::CameraParameters param);
-    void updatePointCloud(sl::Mat &matXYZRGBA);
-
     void exit();
+    bool isAvailable();
+    void init(int argc, char **argv, sl::MODEL camera_model);
+    void updateData(sl::Transform zed_rt, std::string str_t, std::string str_r, sl::TRACKING_STATE state);
+
 private:
     // Rendering loop method called each frame by glutDisplayFunc
     void render();
@@ -210,6 +186,8 @@ private:
     void draw();
     // Clear and refresh inputs' data
     void clearInputs();
+
+    void printText();
     
     // Glut functions callbacks
     static void drawCallback();
@@ -242,13 +220,25 @@ private:
     int mouseMotion_[2];
     int previousMouseMotion_[2];
     KEY_STATE keyStates_[256];
+    
+    Simple3DObject floor_grid;
+    Simple3DObject zedModel;
+    Simple3DObject zedPath;
+
+    std::vector<sl::float3> vecPath;
+    std::mutex mtx;
+    bool updateZEDposition;
+
+    std::string txtR;
+    std::string txtT;
+    sl::TRACKING_STATE trackState;
+    const std::string str_tracking = "POSITIONAL TRACKING : ";
+
     sl::float3 bckgrnd_clr;
 
-    Simple3DObject frustum;
-    PointCloud pointCloud_;
     CameraGL camera_;
-    Shader shader_;
-    GLuint shMVPMatrixLoc_;
+    ShaderData shaderLine;
+    ShaderData mainShader;
 };
 
-#endif /* __VIEWER_INCLUDE__ */
+#endif /* __GL_VIEWER_HDR__ */

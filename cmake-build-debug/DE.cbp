@@ -267,9 +267,6 @@
 			<Option target="main"/>
 			<Option target="DE"/>
 		</Unit>
-		<Unit filename="/home/asif/CLionProjects/DE/src/GLViewer.cpp">
-			<Option target="gl"/>
-		</Unit>
 		<Unit filename="/home/asif/CLionProjects/DE/src/birdsEye.cpp">
 			<Option target="main"/>
 			<Option target="DE"/>

@@ -175,11 +175,7 @@ cv::Mat birdsEye::mask(cv::Mat img_edges) {
 
 
 // HOUGH LINES
-/**
- *@brief Obtain all the line segments in the masked images which are going to be part of the lane boundaries
- *@param img_mask is the masked binary image from the previous function
- *@return Vector that contains all the detected lines in the image
- */
+
 std::vector<cv::Vec4i> birdsEye::houghLines(cv::Mat img_mask) {
     std::vector<cv::Vec4i> line;
 
@@ -240,13 +236,7 @@ std::vector<std::vector<cv::Vec4i> > birdsEye::lineSeparation(std::vector<cv::Ve
 }
 
 // REGRESSION FOR LEFT AND RIGHT LINES
-/**
- *@brief Regression takes all the classified line segments initial and final points and fits a new lines out of them using the method of least squares.
- *@brief This is done for both sides, left and right.
- *@param left_right_lines is the output of the lineSeparation function
- *@param inputImage is used to select where do the lines will end
- *@return output contains the initial and final points of both lane boundary lines
- */
+
 std::vector<cv::Point> birdsEye::regression(std::vector<std::vector<cv::Vec4i> > left_right_lines, cv::Mat inputImage) {
     std::vector<cv::Point> output(4);
     cv::Point ini;
@@ -312,12 +302,8 @@ std::vector<cv::Point> birdsEye::regression(std::vector<std::vector<cv::Vec4i> >
     return output;
 }
 
-// TURN PREDICTION
-/**
- *@brief Predict if the lane is turning left, right or if it is going straight
- *@brief It is done by seeing where the vanishing point is with respect to the center of the image
- *@return String that says if there is left or right turn or if the road is straight
- */
+
+
 std::string birdsEye::predictTurn() {
     std::string output;
     double vanish_x;
@@ -337,14 +323,7 @@ std::string birdsEye::predictTurn() {
     return output;
 }
 
-// PLOT RESULTS
-/**
- *@brief This function plots both sides of the lane, the turn prediction message and a transparent polygon that covers the area inside the lane boundaries
- *@param inputImage is the original captured frame
- *@param lane is the vector containing the information of both lines
- *@param turn is the output string containing the turn information
- *@return The function returns a 0
- */
+
 
 
 cv::Mat birdsEye::plotLane(cv::Mat inputImage, std::vector<cv::Point> lane, std::string turn) {
@@ -368,6 +347,8 @@ cv::Mat birdsEye::plotLane(cv::Mat inputImage, std::vector<cv::Point> lane, std:
 
     // Plot the turn message
     cv::putText(inputImage, turn, cv::Point(50, 90), cv::FONT_HERSHEY_COMPLEX_SMALL, 3, cvScalar(0, 255, 0), 1, CV_AA);
+
+
 
 
     return inputImage;

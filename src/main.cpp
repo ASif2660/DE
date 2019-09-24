@@ -8,12 +8,16 @@
 #include <string>
 #include <vector>
 
+
 // OCV includes
 #include <opencv2/opencv.hpp>
 #include <birdsEye.h>
 
 using namespace sl;
 using namespace std;
+
+const int MAX_CHAR = 128;  // IMU
+
 
 int main(int argc, char **argv) {
 
@@ -36,7 +40,7 @@ int main(int argc, char **argv) {
     init_params.camera_disable_imu = true; // for this sample, IMU (of ZED-M) is disable, we use the gravity given by the marker.
 
 
-
+    init_params.coordinate_system = COORDINATE_SYSTEM_LEFT_HANDED_Y_UP;
 
     // Open the camera
 
@@ -51,6 +55,15 @@ int main(int argc, char **argv) {
         return 1; // Quit if an error occurred
 
     }
+
+
+    // for position of camera
+
+
+    // IMU CODE
+
+
+
 
 
 
@@ -98,9 +111,16 @@ int main(int argc, char **argv) {
 
 
 
+
+
+    // Create text for GUI
+    char text_rotation[MAX_CHAR];
+    char text_translation[MAX_CHAR];
+
+
+
+
     cv::Matx<float, 4, 1> dist_coeffs = cv::Vec4f::zeros();
-
-
 
     float actual_marker_size_meters = 0.16f; // real marker size in meters
 
@@ -170,11 +190,13 @@ int main(int argc, char **argv) {
 
             cv::putText(image_ocv_rgb, "Loaded dictionary : 6x6.     Press 'SPACE' to reset the camera position", cv::Point(10, 15), cv::FONT_HERSHEY_SIMPLEX, 0.4, cv::Scalar(220, 220, 220));
 
-            position_txt = "ZED  x: " + to_string(zed_pose.pose_data.tx) + "; y: " + to_string(zed_pose.pose_data.ty) + "; z: " + to_string(zed_pose.pose_data.tz);
+            sl::float3 zed_rdy = zed_pose.pose_data.getEulerAngles(false);
+
+            position_txt =
+                    "yaw zed: " + to_string(zed_rdy[2]) +
+                    " ZED  x: " + to_string(zed_pose.pose_data.tx) + "; y: " + to_string(zed_pose.pose_data.ty) + "; z: " + to_string(zed_pose.pose_data.tz);
 
             cv::putText(image_ocv_rgb, position_txt, cv::Point(10, 35), cv::FONT_HERSHEY_SIMPLEX, 0.6, cv::Scalar(236, 188, 26));
-
-
 
 
             // if at least one marker detected
@@ -189,7 +211,7 @@ int main(int argc, char **argv) {
 
                 auto rot_matrix = pose.getRotationMatrix();
 
-                pose.inverse();
+                //pose.inverse();
 
                 can_reset = true;
 
@@ -203,24 +225,25 @@ int main(int argc, char **argv) {
                 int y = (corners[0][0].y + corners[0][1].y + corners[0][2].y + corners[0][3].y) / 4;
 
 
+                sl::float3 yrp = pose.getEulerAngles(false);
 
-        //        surroundEye.scalingFactor(corners, zed.getResolution());
+
+
+             //     surroundEye.scalingFactor(corners, zed.getResolution());
 
                 point_cloud.getValue(x, y, &point_cloud_value);
 
-
                 float distance = sqrt(point_cloud_value.x * point_cloud_value.x + point_cloud_value.y * point_cloud_value.y + point_cloud_value.z * point_cloud_value.z);
 
-
-                position_txt = "X: " + to_string(x) + " Y: " + to_string(y) +  " Distance is: " + to_string(distance);
+                position_txt =
+                        "distance z-axis: " + to_string(pose.tx*100) +
+                        " X: " + to_string(x) + " Y: " + to_string(y) +  " Distance is: " + to_string(distance);
 
 
                 cv::putText(image_ocv_rgb, position_txt, cv::Point(10, 60), cv::FONT_HERSHEY_SIMPLEX, 0.6, cv::Scalar(124, 252, 124));
 
 
 //                std::cout << image_ocv_rgb.size <<"the size of the image " << std::endl;
-
-
 
 
 
@@ -258,9 +281,9 @@ int main(int argc, char **argv) {
                 turn = surroundEye.predictTurn();
 
                 // Plot lane detection
-                lane_image = surroundEye.plotLane(image_ocv_rgb, lane, turn);
+//                lane_image = surroundEye.plotLane(image_ocv_rgb, lane, turn);
 
-                warped_image = surroundEye.birdsEyeFunction(lane_image);
+  //              warped_image = surroundEye.birdsEyeFunction(lane_image);
 
 
                 iterator += 1;
@@ -272,7 +295,7 @@ int main(int argc, char **argv) {
             std::cout << final_image.size << std::endl;
 */
 
-           cv::imshow("Image", warped_image);
+           //cv::imshow("Image", warped_image);
            cv::imshow("ActualImage", final_image);
 
             key = cv::waitKey(10);

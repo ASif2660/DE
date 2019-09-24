@@ -4,6 +4,13 @@
 #include "opencv2/opencv.hpp"
 
 
-// Here we create the functionality for aruco marker
+/*
+
+Intentionally left 
+
+PROTECTED CODE 
+
+
+*/
 
 

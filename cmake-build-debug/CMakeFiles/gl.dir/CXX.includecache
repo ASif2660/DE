@@ -6,29 +6,21 @@
 
 #IncludeRegexTransform: 
 
-../include/GLViewer.hpp
-vector
--
-mutex
+../include/birdsEye.h
+opencv2/opencv.hpp
 -
 sl/Camera.hpp
 -
-GL/glew.h
+vector
 -
-GL/freeglut.h
+string
 -
-GL/gl.h
--
-GL/glut.h
--
-cuda.h
--
-cuda_gl_interop.h
+opencv2/highgui/highgui.hpp
 -
 
-/home/asif/CLionProjects/DE/src/GLViewer.cpp
-GLViewer.hpp
-/home/asif/CLionProjects/DE/src/GLViewer.hpp
+/home/asif/CLionProjects/DE/src/birdsEye.cpp
+birdsEye.h
+/home/asif/CLionProjects/DE/src/birdsEye.h
 
 /usr/local/cuda/include/builtin_types.h
 device_types.h
@@ -221,16 +213,6 @@ driver_types.h
 /usr/local/cuda/include/driver_types.h
 host_defines.h
 /usr/local/cuda/include/host_defines.h
-
-/usr/local/cuda/include/cuda_gl_interop.h
-builtin_types.h
-/usr/local/cuda/include/builtin_types.h
-host_defines.h
-/usr/local/cuda/include/host_defines.h
-OpenGL/gl.h
--
-GL/gl.h
--
 
 /usr/local/cuda/include/cuda_runtime.h
 host_config.h
