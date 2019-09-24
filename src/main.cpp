@@ -92,33 +92,39 @@ int main(int argc, char **argv) {
 
     // BirdsEye Params the class object
     cv::Mat frame;
+
     cv::Mat img_denoise;
+
     cv::Mat img_edges;
+
     cv::Mat img_mask;
+
     cv::Mat img_lines;
+
     std::vector<cv::Vec4i> lines;
+
     std::vector<std::vector<cv::Vec4i> > left_right_lines;
+
     std::vector<cv::Point> lane;
+
     std::string turn;
+
     int flag_plot = -1;
+
     int iterator = 0;
+
     float fx_camera = calibInfo.fx;
+
     float fy_camera = calibInfo.fy;
+
     cv::Mat warped_image;
+
     cv::Mat lane_image;
-
-
-
-
-
-
 
     // Create text for GUI
     char text_rotation[MAX_CHAR];
+
     char text_translation[MAX_CHAR];
-
-
-
 
     cv::Matx<float, 4, 1> dist_coeffs = cv::Vec4f::zeros();
 
@@ -126,11 +132,7 @@ int main(int argc, char **argv) {
 
     auto dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_6X6_100);
 
-
-
     cout << " Is the ARUCO Marker 6x6 ?, check " << actual_marker_size_meters * 1000 << " mm" << endl;
-
-
 
     Transform pose;
 
@@ -152,8 +154,6 @@ int main(int argc, char **argv) {
 
     zed.enableTracking();
 
-
-
     // Loop until 'q' is pressed
 
     char key = '.';
@@ -166,29 +166,19 @@ int main(int argc, char **argv) {
 
             zed.retrieveImage(image_zed, VIEW_LEFT, MEM_CPU, image_size.width, image_size.height);
 
-
-
             // convert to RGB
-
             cv::cvtColor(image_ocv, image_ocv_rgb, cv::COLOR_RGBA2RGB);
-
             // detect marker
-
             cv::aruco::detectMarkers(image_ocv_rgb, dictionary, corners, ids);
-
-
             // get actual ZED position
-
             zed.getPosition(zed_pose);
 
             zed.retrieveMeasure(point_cloud, MEASURE_XYZBGRA);
-
-
             // display ZED position
-
             cv::rectangle(image_ocv_rgb, cv::Point(0, 0), cv::Point(490, 75), cv::Scalar(0, 0, 0), -1);
 
-            cv::putText(image_ocv_rgb, "Loaded dictionary : 6x6.     Press 'SPACE' to reset the camera position", cv::Point(10, 15), cv::FONT_HERSHEY_SIMPLEX, 0.4, cv::Scalar(220, 220, 220));
+            cv::putText(image_ocv_rgb, "Loaded dictionary : 6x6.     Press 'SPACE' to reset the camera "
+                                       "position", cv::Point(10, 15), cv::FONT_HERSHEY_SIMPLEX, 0.4, cv::Scalar(220, 220, 220));
 
             sl::float3 zed_rdy = zed_pose.pose_data.getEulerAngles(false);
 
@@ -227,8 +217,6 @@ int main(int argc, char **argv) {
 
                 sl::float3 yrp = pose.getEulerAngles(false);
 
-
-
              //     surroundEye.scalingFactor(corners, zed.getResolution());
 
                 point_cloud.getValue(x, y, &point_cloud_value);
@@ -244,9 +232,6 @@ int main(int argc, char **argv) {
 
 
 //                std::cout << image_ocv_rgb.size <<"the size of the image " << std::endl;
-
-
-
 
             } else
 
@@ -316,7 +301,5 @@ int main(int argc, char **argv) {
     zed.close();
 
     return 0;
-
-
 
 }
