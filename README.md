@@ -1,4 +1,4 @@
-# DE
-# This code will not run, as the protected code at src/depth_estimator.cpp is missing due to rights. 
+# DE (Detection and Localizaton)
+# This code will not run (as few of the files are intentionally left out) 
 # TODO: CUDA dependencies 
 
