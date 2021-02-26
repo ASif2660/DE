@@ -1,4 +1,6 @@
 
+#Author : Asif
+
 #include <sl/Camera.hpp>
 
 // Sample includes
