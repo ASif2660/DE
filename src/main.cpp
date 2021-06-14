@@ -1,5 +1,5 @@
 
-#Author : Asif
+// Author : Asif
 
 #include <sl/Camera.hpp>
 
