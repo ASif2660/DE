@@ -3,14 +3,11 @@
 //
 #include "opencv2/opencv.hpp"
 
-
 /*
 
-Intentionally left 
+Intentionally left
 
-PROTECTED CODE 
+PROTECTED CODE
 
 
 */
-
-
