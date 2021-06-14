@@ -63,8 +63,6 @@ int main(int argc, char **argv) {
   cv::Mat image_ocv = cv::Mat(image_zed.getHeight(), image_zed.getWidth(),
                               CV_8UC4, image_zed.getPtr<sl::uchar1>(MEM_CPU));
 
-  cv::Mat image_ocv_rgb;
-
   auto calibInfo = zed.getCameraInformation().calibration_parameters.left_cam;
 
   cv::Matx33d camera_matrix = cv::Matx33d::eye();
@@ -77,16 +75,8 @@ int main(int argc, char **argv) {
 
   camera_matrix(1, 2) = calibInfo.cy;
 
-  // BirdsEye Params the class object
-  cv::Mat frame;
-
-  cv::Mat img_denoise;
-
-  cv::Mat img_edges;
-
-  cv::Mat img_mask;
-
-  cv::Mat img_lines;
+  // BirdsEye Params, class object
+  cv::Mat frame, img_edges,img_denoise,img_mask, img_lines, warped_image, lane_image, image_ocv_rgb ;
 
   std::vector<cv::Vec4i> lines;
 
@@ -104,14 +94,8 @@ int main(int argc, char **argv) {
 
   float fy_camera = calibInfo.fy;
 
-  cv::Mat warped_image;
-
-  cv::Mat lane_image;
-
   // Create text for GUI
-  char text_rotation[MAX_CHAR];
-
-  char text_translation[MAX_CHAR];
+  char text_rotation[MAX_CHAR], text_translation[MAX_CHAR];
 
   cv::Matx<float, 4, 1> dist_coeffs = cv::Vec4f::zeros();
 
