@@ -219,9 +219,6 @@ int main(int argc, char **argv) {
         cv::putText(image_ocv_rgb, position_txt, cv::Point(10, 60),
                     cv::FONT_HERSHEY_SIMPLEX, 0.6, cv::Scalar(124, 252, 124));
 
-        //                std::cout << image_ocv_rgb.size <<"the size of the
-        //                image " << std::endl;
-
       } else{ 
       cv::Mat final_image = image_ocv_rgb;
        
@@ -257,21 +254,11 @@ int main(int argc, char **argv) {
 
         iterator += 1;
       }
-
-      /*     std::cout << warped_image.size << std::endl;
-           std::cout << final_image.size << std::endl;
-*/
-
-      // cv::imshow("Image", warped_image);
+        
       cv::imshow("ActualImage", final_image);
 
       key = cv::waitKey(10);
-
-      // Handle key event
-
-      // if KEY_R is pressed and aruco marker is visible, then reset ZED
-      // position
-
+        
       if (key == ' ')
 
         zed.resetTracking(pose);
