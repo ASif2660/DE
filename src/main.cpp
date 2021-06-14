@@ -238,12 +238,11 @@ int main(int argc, char **argv) {
         //                std::cout << image_ocv_rgb.size <<"the size of the
         //                image " << std::endl;
 
-      } else
-
-        can_reset = false;
-
+      } else{ 
       cv::Mat final_image = image_ocv_rgb;
-
+       
+      can_reset = false;
+        
       birdsEye surroundEye(image_ocv_rgb, fx_camera, fy_camera);
 
       img_denoise = surroundEye.deNoise(image_ocv_rgb);
