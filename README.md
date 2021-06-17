@@ -9,6 +9,6 @@ Last updated the code: 20.12.2019
 - ` mkdir build && cd build `
 - ` cmake .. && make install -j4`
 - ` cd build/bin`
-- ` ./DE`
+- ` ./main`
 
 
